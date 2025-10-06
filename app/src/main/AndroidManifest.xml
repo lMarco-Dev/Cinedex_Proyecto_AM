@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Cinedex">
         <activity
+            android:name=".Actividad_Registrarse"
+            android:exported="false" />
+        <activity
+            android:name=".Actividad_Login"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

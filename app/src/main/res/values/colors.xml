@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Base -->
+    <color name="black">#0A0A0A</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- Tonos de fondo -->
+    <color name="gray_dark">#121212</color>        <!-- Fondo general -->
+    <color name="gray_medium">#1C1C1C</color>      <!-- Tarjetas o secciones -->
+    <color name="gray_light">#2A2A2A</color>       <!-- Detalles o separadores -->
+    <color name="text_gray">#BDBDBD</color>        <!-- Texto secundario -->
+
+    <!-- Tonos verdes -->
+    <color name="emerald_green">#009B4E</color>    <!-- Verde principal -->
+    <color name="kick_green">#53FC18</color>       <!-- Verde neón (efectos o íconos activos) -->
+
+    <!-- Degradado principal -->
+    <color name="gradient_green_start">#007A33</color>
+    <color name="gradient_green_center">#15C15A</color>
+    <color name="gradient_green_end">#53FC18</color>
+
+    <!-- Dorados premium -->
+    <color name="gold">#CBA135</color>             <!-- Dorado base -->
+    <color name="gold_light">#FFD369</color>       <!-- Dorado claro (hover, acentos) -->
+    <color name="gold_dark">#A67C00</color>        <!-- Dorado profundo -->
+
+    <!-- Degradado oscuro de fondo -->
+    <color name="gradient_start">#0D0D0D</color>
+    <color name="gradient_end">#1C1C1C</color>
 </resources>
