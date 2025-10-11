@@ -5,10 +5,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_login_gradient"
     tools:context=".Actividad_Login">
 
-    <!-- Fondo decorativo superior -->
+    <!-- 🌄 Fondo con imagen -->
+    <ImageView
+        android:id="@+id/bgLogin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/fondo_login"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/fondo_login"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 🌫️ Capa oscura semitransparente para contraste -->
+    <View
+        android:id="@+id/darkOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#B3000000"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 🌀 Fondo decorativo superior -->
     <ImageView
         android:id="@+id/bgCurve"
         android:layout_width="match_parent"
@@ -16,22 +39,24 @@
         android:scaleType="fitXY"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Logo -->
+    <!-- 🎬 Logo -->
     <ImageView
         android:id="@+id/imgLogo"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="80dp"
-        android:src="@drawable/logo_cinedex"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="60dp"
+        android:src="@drawable/logo_chatgpt"
         android:contentDescription="Logo"
         android:scaleType="centerInside"
+        android:elevation="12dp"
+        android:background="@drawable/logo_glow"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Título -->
+    <!-- ✨ Texto principal -->
     <TextView
         android:id="@+id/tvWelcome"
         android:layout_width="wrap_content"
@@ -42,7 +67,7 @@
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/imgLogo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Subtítulo -->
     <TextView
@@ -55,9 +80,9 @@
         android:textStyle="italic"
         app:layout_constraintTop_toBottomOf="@id/tvWelcome"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Tarjeta de formulario -->
+    <!-- 🪪 Tarjeta de formulario -->
     <androidx.cardview.widget.CardView
         android:id="@+id/loginCard"
         android:layout_width="match_parent"

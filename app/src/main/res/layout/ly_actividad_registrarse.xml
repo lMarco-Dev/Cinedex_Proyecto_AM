@@ -5,18 +5,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_register_gradient"
     tools:context=".Actividad_Registrarse">
+
+    <!-- Fondo con imagen y degradado difuminado -->
+    <ImageView
+        android:id="@+id/bgRegister"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/fondo_register"
+        android:scaleType="centerCrop"
+        android:alpha="0.8"
+        android:contentDescription="@string/fondo_login"/>
+
+    <!-- Overlay con degradado difuminado más fuerte -->
+    <View
+        android:id="@+id/overlayGradient"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/overlay_register_gradient"/>
 
     <!-- Logo principal -->
     <ImageView
         android:id="@+id/imgLogo"
-        android:layout_width="130dp"
-        android:layout_height="130dp"
-        android:layout_marginTop="70dp"
-        android:src="@drawable/logo_cinedex"
+        android:layout_width="190dp"
+        android:layout_height="190dp"
+        android:layout_marginTop="60dp"
+        android:src="@drawable/logo_chatgpt"
         android:contentDescription="Logo Cinedex"
         android:scaleType="centerInside"
+        android:elevation="12dp"
+        android:background="@drawable/logo_glow"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -27,14 +45,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Crea tu cuenta"
-        android:textColor="@color/gold"
-        android:textSize="30sp"
+        android:textColor="@color/gold_light"
+        android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/imgLogo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
 
-    <!-- Tarjeta translúcida (efecto vidrio oscuro) -->
+    <!-- Contenedor del formulario -->
     <LinearLayout
         android:id="@+id/formContainer"
         android:layout_width="match_parent"
@@ -42,7 +61,8 @@
         android:layout_margin="24dp"
         android:orientation="vertical"
         android:padding="24dp"
-        android:background="@color/gray_medium"
+        android:background="@drawable/card_transparent_dark"
+        android:elevation="6dp"
         app:layout_constraintTop_toBottomOf="@id/tvTitle">
 
         <!-- Nombre -->
@@ -111,7 +131,7 @@
             android:layout_height="56dp"
             android:layout_marginTop="28dp"
             android:background="@drawable/btn_gold_gradient"
-            android:elevation="8dp"
+            android:elevation="10dp"
             android:clickable="true"
             android:focusable="true">
 
@@ -126,13 +146,13 @@
         </FrameLayout>
     </LinearLayout>
 
-    <!-- Texto de regreso -->
+    <!-- Texto inferior -->
     <TextView
         android:id="@+id/tvGoToLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="¿Ya tienes cuenta? Inicia sesión"
-        android:textColor="@color/gold_light"
+        android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
         android:layout_marginBottom="24dp"

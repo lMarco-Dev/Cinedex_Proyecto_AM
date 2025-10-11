@@ -2,4 +2,6 @@
     <string name="app_name">Cinedex</string>
     <string name="welcome_text">Bienvenido a\n<font color="#007A33">CINEDEX</font></string>
     <string name="arrow_icon">Icono de flecha</string>
+    <string name="fondo_login">Fondo de inicio de sesión</string>
+
 </resources>
