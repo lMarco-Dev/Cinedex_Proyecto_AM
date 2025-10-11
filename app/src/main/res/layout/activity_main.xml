@@ -3,114 +3,38 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@drawable/bg_splash_gradient"
     tools:context=".MainActivity">
 
-    <!--Imagen principal del Popcorn-->
+    <!-- Logo central -->
     <ImageView
-        android:id="@+id/imgPopcorn"
-        android:layout_width="wrap_content"
-        android:layout_height="400dp"
-        android:layout_marginTop="60dp"
-        android:adjustViewBounds="true"
+        android:id="@+id/logoSplash"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:src="@drawable/logo_chatgpt"
+        android:layout_marginBottom="16dp"
+        android:alpha="1"
         android:scaleType="centerInside"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/chatgpt_image" />
-
-    <!--Estilo de cuadrado con curva-->
-    <ImageView
-        android:id="@+id/bgCurve"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/bg_curved_bottom"
-        app:layout_constraintTop_toBottomOf="@id/imgPopcorn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!--Titulo-->
+    <!-- Texto del nombre -->
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tvAppName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="24dp"
-        android:text="@string/welcome_text"
-        android:textColor="@color/gold"
-        android:textSize="35sp"
+        android:text="CINEDEX"
+        android:textColor="@color/gold_light"
         android:textStyle="bold"
+        android:textSize="34sp"
+        android:letterSpacing="0.05"
+        android:alpha="0"
+        app:layout_constraintTop_toBottomOf="@id/logoSplash"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgPopcorn" />
-
-    <!--Frase de la app-->
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="24dp"
-        android:text="Tu pasión por el cine, ahora en un solo \nlugar. Explora, califica y comparte tu viaje \npor el séptimo arte con otros \ncinéfilos como TÚ."
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-    <!-- Botón principal con fondo degradado -->
-    <FrameLayout
-        android:id="@+id/btnStart"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/intro_background"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackground"
-        android:elevation="6dp"
-        android:paddingHorizontal="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2">
-
-        <!-- Texto del botón -->
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center"
-            android:text="Comencemos"
-            android:textColor="@color/white"
-            android:textSize="25sp"
-            android:textStyle="bold"
-            android:layout_marginEnd="12dp" />
-
-        <!-- Círculo con flecha (más cerca del texto) -->
-        <FrameLayout
-            android:id="@+id/circleBackground"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
-            android:layout_gravity="center_vertical|end"
-            android:layout_marginEnd="4dp"
-            android:background="@drawable/bg_circle_gradient">
-
-            <ImageView
-                android:id="@+id/arrowIcon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:contentDescription="@string/arrow_icon"
-                android:src="@drawable/ic_arrow_right" />
-        </FrameLayout>
-
-    </FrameLayout>
-
-
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
