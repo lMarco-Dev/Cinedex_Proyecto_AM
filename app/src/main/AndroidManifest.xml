@@ -12,6 +12,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Cinedex">
         <activity
+            android:name=".ProfileFragment"
+            android:exported="false" />
+        <activity
+            android:name=".SearchFragment"
+            android:exported="false" />
+        <activity
+            android:name=".HomeFragment"
+            android:exported="false" />
+        <activity
+            android:name=".Actividad_Principal"
+            android:exported="false" />
+        <activity
             android:name=".Actividad_Registrarse"
             android:exported="false" />
         <activity

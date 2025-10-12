@@ -34,5 +34,14 @@ public class Actividad_Login extends AppCompatActivity {
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
+
+        btnIniciarSesion.setOnClickListener(v-> {
+            Intent intent = new Intent(this, Actividad_Principal.class);
+            startActivity(intent);
+
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+            finish();
+        });
     }
 }

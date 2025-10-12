@@ -1,7 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Cinedex" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+
+    <style name="Theme.Cinedex" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/kick_green</item>
+        <item name="colorSecondary">@color/emerald_green</item>
+        <item name="android:windowBackground">@color/gray_dark</item>
+    </style>
+
+    <style name="BottomNavActiveIndicatorStyle">
+        <item name="android:background">@drawable/bottom_nav_indicator</item>
     </style>
 </resources>
