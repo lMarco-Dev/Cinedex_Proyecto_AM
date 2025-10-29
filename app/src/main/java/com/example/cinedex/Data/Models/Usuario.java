@@ -2,7 +2,7 @@ package com.example.cinedex.Data.Models;
 
 public class Usuario {
 
-    private String id;
+    private int idUsuario;
     private String nombre;
     private String correo;
     private String contraseña;
@@ -10,19 +10,18 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(String id, String nombre, String correo, String contraseña) {
-        this.id = id;
+    public Usuario(String nombre, String correo, String contraseña) {
         this.nombre = nombre;
         this.correo = correo;
         this.contraseña = contraseña;
     }
 
-    public String getId() {
-        return id;
+    public int getId() {
+        return idUsuario;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setId(int id) {
+        this.idUsuario = id;
     }
 
     public String getNombre() {
