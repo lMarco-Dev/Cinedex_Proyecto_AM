@@ -1,6 +1,6 @@
-package com.example.cinedex.Network;
+package com.example.cinedex.Data.Network;
 
-import com.example.cinedex.Models.MovieResponse;
+import com.example.cinedex.Data.Models.MovieResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

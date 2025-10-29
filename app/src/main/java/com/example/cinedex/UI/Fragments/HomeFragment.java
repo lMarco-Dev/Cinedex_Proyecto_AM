@@ -1,4 +1,4 @@
-package com.example.cinedex;
+package com.example.cinedex.UI.Fragments;
 
 // ... (imports existentes) ...
 import android.os.Bundle;
@@ -11,12 +11,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.cinedex.Models.MainAdapter; // Nuevo Adaptador
-import com.example.cinedex.Models.Movie;
-import com.example.cinedex.Models.MovieResponse;
-import com.example.cinedex.Models.Section; // Nuevo Modelo
-import com.example.cinedex.Network.RetrofitClient;
-import com.example.cinedex.Network.TmdbApiService;
+import com.example.cinedex.R;
+import com.example.cinedex.UI.Adapters.MainAdapter; // Nuevo Adaptador
+import com.example.cinedex.Data.Models.Movie;
+import com.example.cinedex.Data.Models.MovieResponse;
+import com.example.cinedex.Data.Models.Section; // Nuevo Modelo
+import com.example.cinedex.Data.Network.RetrofitClient;
+import com.example.cinedex.Data.Network.TmdbApiService;
 
 import java.util.ArrayList;
 import java.util.List;

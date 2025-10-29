@@ -1,4 +1,4 @@
-package com.example.cinedex.Models;
+package com.example.cinedex.Data.Models;
 
 public class Usuario {
 

@@ -1,6 +1,4 @@
-package com.example.cinedex.Network;
-
-import com.example.cinedex.Models.MovieResponse;
+package com.example.cinedex.Data.Network;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

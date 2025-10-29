@@ -1,4 +1,4 @@
-package com.example.cinedex.Models;
+package com.example.cinedex.Data.Models;
 
 import com.google.gson.annotations.SerializedName;
 

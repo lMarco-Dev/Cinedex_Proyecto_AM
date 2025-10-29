@@ -1,19 +1,18 @@
 // Actividad_Registrarse.java
-package com.example.cinedex;
+package com.example.cinedex.UI.Activities;
 
 import android.content.Intent;
 import android.graphics.RenderEffect;
 import android.graphics.Shader;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.cinedex.R;
 
 public class Actividad_Registrarse extends AppCompatActivity {
 

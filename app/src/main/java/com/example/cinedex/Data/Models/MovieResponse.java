@@ -1,6 +1,5 @@
-package com.example.cinedex.Models; // Usando 'models' en minúscula, como es estándar
+package com.example.cinedex.Data.Models; // Usando 'models' en minúscula, como es estándar
 
-import com.example.cinedex.Models.Movie;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 

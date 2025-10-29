@@ -14,25 +14,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Cinedex">
         <activity
-            android:name=".ProfileFragment"
+            android:name=".UI.Fragments.ProfileFragment"
             android:exported="false" />
         <activity
-            android:name=".SearchFragment"
+            android:name=".UI.Fragments.SearchFragment"
             android:exported="false" />
         <activity
-            android:name=".HomeFragment"
+            android:name=".UI.Fragments.HomeFragment"
             android:exported="false" />
         <activity
-            android:name=".Actividad_Principal"
+            android:name=".UI.Activities.Actividad_Principal"
             android:exported="false" />
         <activity
-            android:name=".Actividad_Registrarse"
+            android:name=".UI.Activities.Actividad_Registrarse"
             android:exported="false" />
         <activity
-            android:name=".Actividad_Login"
+            android:name=".UI.Activities.Actividad_Login"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".UI.Activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

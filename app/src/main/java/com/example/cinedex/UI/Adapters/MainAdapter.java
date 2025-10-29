@@ -1,4 +1,4 @@
-package com.example.cinedex.Models;
+package com.example.cinedex.UI.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,8 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.cinedex.R;
-import com.example.cinedex.Models.Section;
-import com.example.cinedex.adapters.MovieAdapter;
+import com.example.cinedex.Data.Models.Section;
 
 import java.util.List;
 

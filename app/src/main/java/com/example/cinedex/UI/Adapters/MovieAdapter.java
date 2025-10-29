@@ -1,4 +1,4 @@
-package com.example.cinedex.adapters;
+package com.example.cinedex.UI.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.cinedex.R;
-import com.example.cinedex.Models.Movie;
+import com.example.cinedex.Data.Models.Movie;
 import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {

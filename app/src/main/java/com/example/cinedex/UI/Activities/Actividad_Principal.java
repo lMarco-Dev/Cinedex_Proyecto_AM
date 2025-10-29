@@ -1,4 +1,4 @@
-package com.example.cinedex;
+package com.example.cinedex.UI.Activities;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -6,6 +6,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.cinedex.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class Actividad_Principal extends AppCompatActivity {

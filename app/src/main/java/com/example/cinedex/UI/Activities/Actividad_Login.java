@@ -1,4 +1,4 @@
-package com.example.cinedex;
+package com.example.cinedex.UI.Activities;
 
 import android.content.Intent;
 import android.graphics.RenderEffect;
@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.cinedex.R;
 
 public class Actividad_Login extends AppCompatActivity {
 
