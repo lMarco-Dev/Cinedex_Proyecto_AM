@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="24dp">
+
+    <TextView
+        android:id="@+id/section_title_top10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:textAllCaps="true"
+        tools:text="TOP 10 HOY" />
+
+    <TextView
+        android:id="@+id/section_subtitle_top10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:textSize="14sp"
+        android:textColor="#B0B0B0"
+        tools:text="Lo más visto en Perú" /> <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/section_recycler_view_top10"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipToPadding="false"
+    android:paddingHorizontal="8dp"
+    android:layout_marginTop="8dp"
+    android:orientation="horizontal"
+    tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    tools:orientation="horizontal"
+    tools:listitem="@layout/item_movie_top10" />
+
+</LinearLayout>

@@ -14,7 +14,7 @@
         android:paddingHorizontal="16dp"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         tools:text="Animes estranhos... e irresistíveis" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -28,5 +28,4 @@
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:orientation="horizontal"
         tools:listitem="@layout/item_movie" />
-
 </LinearLayout>

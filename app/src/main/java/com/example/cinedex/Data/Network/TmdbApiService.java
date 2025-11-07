@@ -17,6 +17,22 @@ public interface TmdbApiService {
             @Query("api_key") String apiKey
     );
 
+    // Agrega esta
+    @GET("movie/top_rated")
+    Call<MovieResponse> getTopRatedMovies(@Query("api_key") String apiKey);
+
+    // Agrega esta
+    @GET("movie/upcoming")
+    Call<MovieResponse> getUpcomingMovies(@Query("api_key") String apiKey);
+
+    // 1. Para "En Cartelera"
+    @GET("movie/now_playing")
+    Call<MovieResponse> getNowPlayingMovies(@Query("api_key") String apiKey);
+
+    // 2. Para "Tendencias de la Semana"
+    @GET("trending/movie/week")
+    Call<MovieResponse> getTrendingMovies(@Query("api_key") String apiKey);
+
     @GET("Usuario")
     Call<List<Usuario>> GetUsuario();
 
