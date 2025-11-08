@@ -14,6 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Cinedex">
         <activity
+            android:name=".UI.Fragments.MovieDetailFragment"
+            android:exported="false" />
+        <activity
             android:name=".UI.Fragments.ProfileFragment"
             android:exported="false" />
         <activity
