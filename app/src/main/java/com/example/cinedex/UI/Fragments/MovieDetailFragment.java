@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +22,7 @@ import com.example.cinedex.Data.Network.RetrofitClient;
 import com.example.cinedex.Data.Network.TmdbApiService;
 import com.example.cinedex.R;
 
+import java.util.Locale; // Importa Locale para formatear texto
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,8 +36,10 @@ public class MovieDetailFragment extends Fragment {
     // Vistas
     private ImageView detailBackdrop, detailPoster;
     private TextView detailTitle, detailDescription, detailMetadata;
+    private RatingBar detailRating;
     private Button detailReviewButton;
     private Toolbar toolbar;
+    private TextView detailTextRating, detailTextYear, detailTextRuntime;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,14 +61,17 @@ public class MovieDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Enlazar las nuevas vistas
+        // Enlazar las vistas
         toolbar = view.findViewById(R.id.detail_toolbar);
         detailBackdrop = view.findViewById(R.id.detail_backdrop);
         detailPoster = view.findViewById(R.id.detail_poster);
         detailTitle = view.findViewById(R.id.detail_title);
-        detailMetadata = view.findViewById(R.id.detail_metadata);
+        detailRating = view.findViewById(R.id.detail_rating);
         detailDescription = view.findViewById(R.id.detail_description);
         detailReviewButton = view.findViewById(R.id.detail_review_button);
+        detailTextRating = view.findViewById(R.id.detail_text_rating);
+        detailTextYear = view.findViewById(R.id.detail_text_year);
+        detailTextRuntime = view.findViewById(R.id.detail_text_runtime);
 
         // --- Configuración del Botón "Atrás" ---
         setupToolbar();
@@ -95,6 +102,9 @@ public class MovieDetailFragment extends Fragment {
     }
 
     private void fetchMovieDetails() {
+        // --- ¡CAMBIO AQUÍ! ---
+        // Debes pedir a la API que te dé también 'runtime' y 'release_date'
+        // Esto se hace en la interfaz, pero para este código asumimos que ya lo hace
         Call<Movie> call = apiService.getMovieDetails(movieId, TMDB_API_KEY);
         call.enqueue(new Callback<Movie>() {
             @Override
@@ -116,17 +126,32 @@ public class MovieDetailFragment extends Fragment {
         detailTitle.setText(movie.getTitle());
         detailDescription.setText(movie.getOverview());
 
-        // Cargar metadata (ejemplo)
-        // Necesitarías agregar 'release_date' y 'vote_average' a tu Movie.java
-        // detailMetadata.setText("★ " + movie.getVoteAverage() + " | " + movie.getReleaseDate());
+        float rating = (float) (movie.getVoteAverage() / 2.0);
+        detailRating.setRating(rating);
 
+        // Rating (ej. "8.3")
+        detailTextRating.setText(String.format(Locale.US, "%.1f", movie.getVoteAverage()));
+
+        // Año (ej. "2024")
+        if (movie.getReleaseDate() != null && !movie.getReleaseDate().isEmpty()) {
+            detailTextYear.setText(movie.getReleaseDate().split("-")[0]);
+        } else {
+            detailTextYear.setText("N/A");
+        }
+
+        // Duración (ej. "120 min")
+        if (movie.getRuntime() > 0) {
+            detailTextRuntime.setText(movie.getRuntime() + " min");
+        } else {
+            detailTextRuntime.setText("N/A");
+        }
+
+        // Cargar imágenes
         String backdropUrl = "https://image.tmdb.org/t/p/w780" + movie.getBackdropPath();
         String posterUrl = "https://image.tmdb.org/t/p/w500" + movie.getPosterPath();
 
         if (getContext() != null) {
-            // Cargar imagen de fondo
             Glide.with(getContext()).load(backdropUrl).into(detailBackdrop);
-            // Cargar póster vertical
             Glide.with(getContext()).load(posterUrl).into(detailPoster);
         }
     }

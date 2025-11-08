@@ -25,16 +25,23 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         this.context = context;
     }
 
+
+    //Crear las filas de las peliculas
     @NonNull
     @Override
     public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_movie, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_movie, parent, false); //Crea la vista visual
         return new MovieViewHolder(view);
     }
 
+    //Rellenar
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
+
+        //Obtenemos la pelicula para la posición.
         Movie movie = movies.get(position);
+
+        //La rellenamos con lso datos.
         holder.title.setText(movie.getTitle());
         holder.voteCount.setText(movie.getVoteCount() + " Votos");
 
@@ -61,6 +68,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         });
     }
 
+    // Items en una lista
     @Override
     public int getItemCount() {
         return movies.size();

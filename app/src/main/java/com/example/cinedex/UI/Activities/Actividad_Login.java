@@ -20,18 +20,17 @@ public class Actividad_Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ly_actividad_login);
 
-        FrameLayout btnIniciarSesion = findViewById(R.id.btnLogin);
-        TextView tvRegister = findViewById(R.id.tvRegister);
-
-        ImageView bgLogin = findViewById(R.id.bgLogin);
+        FrameLayout btnIniciarSesion = findViewById(R.id.btn_ingresar);
+        TextView txtIrARegistro = findViewById(R.id.txtRegistrar);
+        ImageView fondoLogin = findViewById(R.id.fondo_login);
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            bgLogin.setRenderEffect(RenderEffect.createBlurEffect(25f, 25f, Shader.TileMode.CLAMP));
+            fondoLogin.setRenderEffect(RenderEffect.createBlurEffect(25f, 25f, Shader.TileMode.CLAMP));
         } else {
-            bgLogin.setAlpha(0.4f);
+            fondoLogin.setAlpha(0.4f);
         }
 
-        tvRegister.setOnClickListener(v -> {
+        txtIrARegistro.setOnClickListener(v -> {
             Intent intent = new Intent(this, Actividad_Registrarse.class);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
