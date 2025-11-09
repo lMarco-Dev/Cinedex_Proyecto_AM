@@ -3,7 +3,7 @@ package com.example.cinedex.Data.Network;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RetrofitClient {
+public class TmdbClient {
 
     private static Retrofit retrofit = null;
     //Base url

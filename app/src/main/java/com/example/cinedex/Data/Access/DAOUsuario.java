@@ -1,6 +1,5 @@
 package com.example.cinedex.Data.Access;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -14,58 +13,58 @@ import java.util.List;
 
 public class DAOUsuario {
 
-    //Datos base
-    private String nombreBD;
-    private int version;
     private BDHelper helper;
 
-    //Constructor
-
-    public DAOUsuario(Context contexto) {
-        this.nombreBD = "BDUsuario";
-        this.version = 1;
-        Log.d("Estado","Inicio de DAOUsuario");
-        this.helper = new BDHelper(contexto, nombreBD, null, version);
+    public DAOUsuario(Context context) {
+        helper = new BDHelper(context);
         Log.d("Estado","[BDHelper]: Inicializado Correctamente");
     }
 
-    public String Insertar(Usuario _usuario) {
+    // ✅ INSERTAR USUARIO LOCAL (solo después de confirmar con API)
+    public boolean Insertar(Usuario _usuario) {
         SQLiteDatabase db = helper.getWritableDatabase();
         ContentValues valores = new ContentValues();
 
-        // USANDO CONSTANTES DE COLUMNA
-        valores.put(BDHelper.COL_NOMBRE, _usuario.getNombre());
-        valores.put(BDHelper.COL_CORREO, _usuario.getCorreo());
+        valores.put(BDHelper.COL_NOMBRE_USUARIO, _usuario.getNombreUsuario());
+        valores.put(BDHelper.COL_EMAIL, _usuario.getEmail());
         valores.put(BDHelper.COL_CONTRASENA, _usuario.getContraseña());
+        valores.put(BDHelper.COL_NOMBRES, _usuario.getNombres());
+        valores.put(BDHelper.COL_APELLIDOS, _usuario.getApellidos());
+        valores.put(BDHelper.COL_RANGO_ACTUAL, _usuario.getIdRangoActual());
 
-        // USANDO CONSTANTE DE TABLA
-        long fila = db.insert(BDHelper.TABLA_USUARIO,null,valores);
-        Log.d("Estado","Fila Insertar: " + fila);
+        long fila = db.insert(BDHelper.TABLA_USUARIO, null, valores);
         db.close();
 
-        if(fila > 0)
-            return "OK";
-        else
-            return "[ERROR]: Registro invalido";
+        return fila > 0;
     }
 
-    // Metodo LISTAR
+    // ✅ LISTAR TODOS
     public List<Usuario> Listar(){
         List<Usuario> lista = new ArrayList<>();
         SQLiteDatabase db = helper.getReadableDatabase();
 
-        // USANDO CONSTANTE DE TABLA EN SENTENCIA SQL
         String sql = "SELECT * FROM " + BDHelper.TABLA_USUARIO;
         Cursor registros = db.rawQuery(sql,null);
 
+        int idIndex = registros.getColumnIndexOrThrow(BDHelper.ID_USUARIO);
+        int nombreUsuario = registros.getColumnIndexOrThrow(BDHelper.COL_NOMBRE_USUARIO);
+        int email = registros.getColumnIndexOrThrow(BDHelper.COL_EMAIL);
+        int contraseña = registros.getColumnIndexOrThrow(BDHelper.COL_CONTRASENA);
+        int nombres = registros.getColumnIndexOrThrow(BDHelper.COL_NOMBRES);
+        int apellidos = registros.getColumnIndexOrThrow(BDHelper.COL_APELLIDOS);
+        int rango = registros.getColumnIndexOrThrow(BDHelper.COL_RANGO_ACTUAL);
+
         if(registros.moveToFirst()){
             do {
-                // USANDO CONSTANTES PARA EL MAPEADO DE COLUMNAS (más seguro)
-                String nombre = registros.getString(registros.getColumnIndexOrThrow(BDHelper.COL_NOMBRE));
-                String correo = registros.getString(registros.getColumnIndexOrThrow(BDHelper.COL_CORREO));
-                String contraseña = registros.getString(registros.getColumnIndexOrThrow(BDHelper.COL_CONTRASENA));
+                Usuario u = new Usuario();
+                u.setIdUsuario(registros.getInt(idIndex));
+                u.setNombreUsuario(registros.getString(nombreUsuario));
+                u.setEmail(registros.getString(email));
+                u.setContraseña(registros.getString(contraseña));
+                u.setNombres(registros.getString(nombres));
+                u.setApellidos(registros.getString(apellidos));
+                u.setIdRangoActual(registros.getInt(rango));
 
-                Usuario u = new Usuario(nombre, correo, contraseña);
                 lista.add(u);
             } while (registros.moveToNext());
         }
@@ -74,11 +73,9 @@ public class DAOUsuario {
         return lista;
     }
 
-    // Metodo ELIMINAR
+    // ✅ ELIMINAR
     public boolean Eliminar(int idUsuario){
         SQLiteDatabase db = helper.getWritableDatabase();
-
-        // USANDO CONSTANTES DE TABLA Y COLUMNA
         int filas = db.delete(BDHelper.TABLA_USUARIO,
                 BDHelper.ID_USUARIO + "=?",
                 new String[]{String.valueOf(idUsuario)});
@@ -86,22 +83,37 @@ public class DAOUsuario {
         return filas > 0;
     }
 
-    // Metodo ACTUALIZAR
+    // ✅ ACTUALIZAR
     public boolean Actualizar(Usuario u, int idUsuario) {
         SQLiteDatabase db = helper.getWritableDatabase();
         ContentValues valores = new ContentValues();
 
-        // USANDO CONSTANTES DE COLUMNA
-        valores.put(BDHelper.COL_NOMBRE, u.getNombre());
-        valores.put(BDHelper.COL_CORREO, u.getCorreo());
+        valores.put(BDHelper.COL_NOMBRE_USUARIO, u.getNombreUsuario());
+        valores.put(BDHelper.COL_EMAIL, u.getEmail());
         valores.put(BDHelper.COL_CONTRASENA, u.getContraseña());
+        valores.put(BDHelper.COL_NOMBRES, u.getNombres());
+        valores.put(BDHelper.COL_APELLIDOS, u.getApellidos());
+        valores.put(BDHelper.COL_RANGO_ACTUAL, u.getIdRangoActual());
 
         int filas = db.update(BDHelper.TABLA_USUARIO,
                 valores,
                 BDHelper.ID_USUARIO + "=?",
                 new String[]{String.valueOf(idUsuario)});
         db.close();
-
         return filas > 0;
+    }
+
+    // ✅ Verificar si existe usuario (para evitar duplicar sesión local)
+    public boolean ExisteUsuario(String nombreUsuario){
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT 1 FROM " + BDHelper.TABLA_USUARIO + " WHERE " + BDHelper.COL_NOMBRE_USUARIO + " = ?",
+                new String[]{nombreUsuario}
+        );
+
+        boolean existe = cursor.moveToFirst();
+        cursor.close();
+        db.close();
+        return existe;
     }
 }

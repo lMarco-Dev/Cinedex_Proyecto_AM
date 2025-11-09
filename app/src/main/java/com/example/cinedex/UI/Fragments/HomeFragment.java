@@ -10,11 +10,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.cinedex.R;
 import com.example.cinedex.UI.Adapters.MainAdapter;
-import com.example.cinedex.Data.Models.Movie;
 import com.example.cinedex.Data.Models.MovieResponse;
 import com.example.cinedex.Data.Models.Section;
 import com.example.cinedex.Data.Models.SectionTop10;
-import com.example.cinedex.Data.Network.RetrofitClient;
+import com.example.cinedex.Data.Network.TmdbClient;
 import com.example.cinedex.Data.Network.TmdbApiService;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +48,7 @@ public class HomeFragment extends Fragment {
         // Asumiendo que tu layout se llama 'fragment_home.xml'
         View view = inflater.inflate(R.layout.ly_home_fragment, container, false);
 
-        apiService = RetrofitClient.getApiService();
+        apiService = TmdbClient.getApiService();
         mainRecyclerView = view.findViewById(R.id.recycler_popular_movies);
         mainRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 

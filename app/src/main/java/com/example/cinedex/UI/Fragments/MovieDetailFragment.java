@@ -18,7 +18,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
 import com.example.cinedex.Data.Models.Movie;
-import com.example.cinedex.Data.Network.RetrofitClient;
+import com.example.cinedex.Data.Network.TmdbClient;
 import com.example.cinedex.Data.Network.TmdbApiService;
 import com.example.cinedex.R;
 
@@ -47,7 +47,7 @@ public class MovieDetailFragment extends Fragment {
         if (getArguments() != null) {
             this.movieId = getArguments().getInt("movieId");
         }
-        apiService = RetrofitClient.getApiService();
+        apiService = TmdbClient.getApiService();
     }
 
     @Override

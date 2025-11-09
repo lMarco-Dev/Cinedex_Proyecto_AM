@@ -3,41 +3,48 @@ package com.example.cinedex.Data.Models;
 public class Usuario {
 
     private int idUsuario;
-    private String nombre;
-    private String correo;
+    private String nombreUsuario;
+    private String email;
     private String contraseña;
+    private String nombres;
+    private String apellidos;
+    private int idRangoActual;
+
+
 
     public Usuario() {
     }
 
-    public Usuario(String nombre, String correo, String contraseña) {
-        this.nombre = nombre;
-        this.correo = correo;
+    public Usuario(String nombreUsuario, String email, String contraseña, String nombres, String apellidos) {
+        this.nombreUsuario = nombreUsuario;
+        this.email = email;
         this.contraseña = contraseña;
+        this.nombres = nombres;
+        this.apellidos = apellidos;
     }
 
-    public int getId() {
+    public int getIdUsuario() {
         return idUsuario;
     }
 
-    public void setId(int id) {
-        this.idUsuario = id;
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getNombreUsuario() {
+        return nombreUsuario;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
     }
 
-    public String getCorreo() {
-        return correo;
+    public String getEmail() {
+        return email;
     }
 
-    public void setCorreo(String correo) {
-        this.correo = correo;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getContraseña() {
@@ -46,5 +53,29 @@ public class Usuario {
 
     public void setContraseña(String contraseña) {
         this.contraseña = contraseña;
+    }
+
+    public String getNombres() {
+        return nombres;
+    }
+
+    public void setNombres(String nombres) {
+        this.nombres = nombres;
+    }
+
+    public String getApellidos() {
+        return apellidos;
+    }
+
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
+    }
+
+    public int getIdRangoActual() {
+        return idRangoActual;
+    }
+
+    public void setIdRangoActual(int idRangoActual) {
+        this.idRangoActual = idRangoActual;
     }
 }

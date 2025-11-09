@@ -8,24 +8,32 @@ import androidx.annotation.Nullable;
 
 public class BDHelper extends SQLiteOpenHelper {
 
+    // --- Constantes para la Base de Datos ---
+    private static final String NOMBRE_BD = "cinedex.db";
+    private static final int VERSION_BD = 1;
+
     //Constantes para las tablas
     public static final String TABLA_USUARIO = "Usuario";
     public static final String ID_USUARIO = "idUsuario";
-    public static final String COL_NOMBRE = "nombre";
-    public static final String COL_CORREO = "correo";
-    public static final String COL_CONTRASENA = "contraseña";
+    public static final String COL_NOMBRE_USUARIO = "nombreUsuario";
+    public static final String COL_EMAIL = "email";
+    public static final String COL_CONTRASENA = "contrasena";
+    public static final String COL_NOMBRES = "nombres";
+    public static final String COL_APELLIDOS = "apellidos";
+    public static final String COL_RANGO_ACTUAL = "idRangoActual";
 
     // Sentencia SQL de Creación
     String tabla_User = "CREATE TABLE " + TABLA_USUARIO + " (" +
             ID_USUARIO + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            COL_NOMBRE + " VARCHAR(100) NOT NULL, " +
-            COL_CORREO + " VARCHAR(100) NOT NULL, " +
-            COL_CONTRASENA + " VARCHAR(100) NOT NULL)";
+            COL_NOMBRE_USUARIO + " VARCHAR(100) NOT NULL, " +
+            COL_EMAIL + " VARCHAR(100) NOT NULL, " +
+            COL_CONTRASENA + " VARCHAR(100) NOT NULL, " +
+            COL_NOMBRES + " VARCHAR(100) NOT NULL, " +
+            COL_APELLIDOS + " VARCHAR(100) NOT NULL, " +
+            COL_RANGO_ACTUAL + " INTEGER NOT NULL)";
 
-    public BDHelper(@Nullable Context context,
-                    @Nullable String name,
-                    @Nullable SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    public BDHelper(@Nullable Context context) {
+        super(context, NOMBRE_BD, null, VERSION_BD);
     }
 
     @Override
