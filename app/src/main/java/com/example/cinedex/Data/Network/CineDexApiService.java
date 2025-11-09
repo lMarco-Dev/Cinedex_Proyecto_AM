@@ -3,6 +3,7 @@ package com.example.cinedex.Data.Network;
 import java.util.List;
 
 import com.example.cinedex.Data.Models.DTOs.UsuarioActualizarDto;
+import com.example.cinedex.Data.Models.DTOs.UsuarioLoginDto;
 import com.example.cinedex.Data.Models.DTOs.UsuarioPublicoDto;
 import com.example.cinedex.Data.Models.DTOs.UsuarioRegistroDto;
 import com.example.cinedex.Data.Models.Reseña;
@@ -32,6 +33,10 @@ public interface CineDexApiService {
 
     @DELETE("api/Usuarios/{id}")
     Call<Void> deleteUsuario(@Path("id") int idUsuario);
+
+    // --- Endpoitns para el login ---
+    @POST("api/Usuarios/login")
+    Call<UsuarioPublicoDto> loginUsuario(@Body UsuarioLoginDto loginDto);
 
     // --- Endpoints de Usuarios (api/Reseñas) ---
     @GET("api/Reseñas")

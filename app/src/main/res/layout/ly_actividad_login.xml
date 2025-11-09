@@ -30,15 +30,6 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
-        android:id="@+id/fondo_curva_superior"
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:scaleType="fitXY"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <ImageView
         android:id="@+id/img_logo"
         android:layout_width="200dp"
         android:layout_height="200dp"
@@ -76,6 +67,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+
     <androidx.cardview.widget.CardView
         android:id="@+id/tarjeta_login"
         android:layout_width="match_parent"
@@ -93,18 +85,17 @@
             android:padding="24dp">
 
             <EditText
-                android:id="@+id/campo_correo"
+                android:id="@+id/campo_usuario"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Correo electrónico"
-                android:drawableStart="@drawable/ic_email"
+                android:hint="Nombre de usuario"
+                android:drawableStart="@drawable/ic_person"
                 android:drawablePadding="10dp"
-                android:inputType="textEmailAddress"
+                android:inputType="textPersonName"
                 android:padding="12dp"
                 android:textColor="@color/white"
                 android:textColorHint="@color/text_gray"
                 android:background="@drawable/edittext_rounded_border"/>
-
             <EditText
                 android:id="@+id/campo_contrasena"
                 android:layout_width="match_parent"

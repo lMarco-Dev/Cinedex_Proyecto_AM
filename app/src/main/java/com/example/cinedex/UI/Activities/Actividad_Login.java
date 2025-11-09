@@ -1,48 +1,133 @@
 package com.example.cinedex.UI.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.RenderEffect;
 import android.graphics.Shader;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.cinedex.Data.Models.DTOs.UsuarioLoginDto;
+import com.example.cinedex.Data.Models.DTOs.UsuarioPublicoDto;
+import com.example.cinedex.Data.Network.CineDexApiClient;
+import com.example.cinedex.Data.Network.CineDexApiService;
 import com.example.cinedex.R;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class Actividad_Login extends AppCompatActivity {
+
+    EditText etUsuario, etPassword;
+    FrameLayout btnIniciarSesion;
+    TextView txtIrARegistro;
+    ImageView fondoLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ly_actividad_login);
 
-        FrameLayout btnIniciarSesion = findViewById(R.id.btn_ingresar);
-        TextView txtIrARegistro = findViewById(R.id.txtRegistrar);
-        ImageView fondoLogin = findViewById(R.id.fondo_login);
+        // -- Conectar Vistas ---
+        etUsuario = findViewById(R.id.campo_usuario);
+        etPassword = findViewById(R.id.campo_contrasena);
+        btnIniciarSesion = findViewById(R.id.btn_ingresar);
+        txtIrARegistro = findViewById(R.id.txtRegistrar);
+        fondoLogin = findViewById(R.id.fondo_login);
 
+        // -- Efecto de la imagen de fondo ---
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             fondoLogin.setRenderEffect(RenderEffect.createBlurEffect(25f, 25f, Shader.TileMode.CLAMP));
         } else {
             fondoLogin.setAlpha(0.4f);
         }
 
+        // -- Dirigir al registro --
         txtIrARegistro.setOnClickListener(v -> {
             Intent intent = new Intent(this, Actividad_Registrarse.class);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
 
+        // -- Login --
         btnIniciarSesion.setOnClickListener(v-> {
-            Intent intent = new Intent(this, Actividad_Principal.class);
-            startActivity(intent);
+            String username = etUsuario.getText().toString().trim();
+            String password = etPassword.getText().toString().trim();
 
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            if(username.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Llene todos los campos", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            finish();
+            //Hacemos la petición
+            intentarLogin(username, password);
+        });
+    }
+
+    //-- Metodo para comprar con el API REST ---
+    private void intentarLogin(String username, String password) {
+        //Creamos el DTO de Login
+        UsuarioLoginDto loginDto = new UsuarioLoginDto(username, password);
+
+        //Llamamos a la API
+        CineDexApiService apiService = CineDexApiClient.getApiService();
+
+        //Hacer la llamada
+        apiService.loginUsuario(loginDto).enqueue(new Callback<UsuarioPublicoDto>() {
+            @Override
+            public void onResponse(Call<UsuarioPublicoDto> call, Response<UsuarioPublicoDto> response) {
+
+                if(response.isSuccessful() && response.body() != null) {
+                    //Si el login es exitoso
+                    UsuarioPublicoDto usuarioLogueado = response.body();
+
+                    //Guardar la sesión del usuario
+                    SharedPreferences prefs = getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+
+                    //Guardamos los datos clase del usuario
+                    editor.putInt("ID_USUARIO", usuarioLogueado.getIdUsuario());
+                    editor.putString("NOMBRE_USUARIO", usuarioLogueado.getNombreUsuario());
+                    editor.putString("NOMBRES", usuarioLogueado.getNombres());
+                    editor.putString("APELLIDOS", usuarioLogueado.getApellidos());
+                    editor.putString("NOMBRE_RANGO", usuarioLogueado.getNombreRango());
+                    editor.putBoolean("ESTA_LOGUEADO", true);
+
+                    //Guardamos los cambios
+                    editor.apply();
+
+                    //Enviamos al usuario a la actividad principal
+                    Toast.makeText(Actividad_Login.this, "Bienvenido, " + usuarioLogueado.getNombreUsuario() + "!", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(Actividad_Login.this, Actividad_Principal.class);
+                    startActivity(intent);
+
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    finish();
+                } else {
+                    Log.e("[FALLO LOGIN]", "Código: " + response.code());
+                    Toast.makeText(Actividad_Login.this, "Usuario o contraseña incorrecta", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UsuarioPublicoDto> call, Throwable t) {
+
+                //Error de red
+                Log.e("[LOGIN FALLO]", "Error de conexión: " + t.getMessage());
+                Toast.makeText(Actividad_Login.this, "Error de conexión con el servidor", Toast.LENGTH_SHORT).show();
+
+            }
         });
     }
 }
