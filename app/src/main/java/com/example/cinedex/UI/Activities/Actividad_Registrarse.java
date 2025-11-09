@@ -65,25 +65,28 @@ public class Actividad_Registrarse extends AppCompatActivity {
         });
     }
 
+    // --- MÉTODO ACTUALIZADO ---
     private void intentarRegistro(UsuarioRegistroDto registroDto) {
         CineDexApiService apiService = CineDexApiClient.getApiService();
 
         apiService.registrarUsuario(registroDto).enqueue(new Callback<UsuarioPublicoDto>() {
+
             @Override
             public void onResponse(Call<UsuarioPublicoDto> call, Response<UsuarioPublicoDto> response) {
 
-                if (response.isSuccessful()) {
-
+                if (response.isSuccessful() && response.body() != null) {
+                    // ------ ÉXITO REAL (Código 2xx) ------
                     UsuarioPublicoDto usuarioCreado = response.body();
 
                     // ✅ Guardar usuario localmente
                     Usuario usuarioLocal = new Usuario();
                     usuarioLocal.setNombreUsuario(usuarioCreado.getNombreUsuario());
-                    usuarioLocal.setEmail(registroDto.getEmail());
-                    usuarioLocal.setContraseña(registroDto.getContrasena());
-                    usuarioLocal.setNombres(registroDto.getNombres());
-                    usuarioLocal.setApellidos(registroDto.getApellidos());
-                    usuarioLocal.setIdRangoActual(1); // Por defecto
+                    usuarioLocal.setEmail(registroDto.getEmail()); // Email no viene en la respuesta pública
+                    // ¡No guardes la contraseña en la BD local! (por seguridad)
+                    // usuarioLocal.setContraseña(registroDto.getContrasena());
+                    usuarioLocal.setNombres(usuarioCreado.getNombres()); // Usar la respuesta de la API
+                    usuarioLocal.setApellidos(usuarioCreado.getApellidos()); // Usar la respuesta de la API
+                    usuarioLocal.setIdRangoActual(1); // Asumir rango 1 (luego puedes mejorarlo)
 
                     dao.Insertar(usuarioLocal); // ✅ GUARDAMOS EN SQLITE
 
@@ -91,14 +94,40 @@ public class Actividad_Registrarse extends AppCompatActivity {
                     finish(); // ✅ Volver al Login
                 }
                 else {
-                    Toast.makeText(Actividad_Registrarse.this, "Usuario o correo ya existe.", Toast.LENGTH_LONG).show();
+                    // ------ AQUÍ MANEJAMOS LOS ERRORES (4xx, 5xx) ------
+                    String errorMensaje = "Error desconocido al registrar."; // Mensaje por defecto
+
+                    // Intenta leer el cuerpo del error que envía la API
+                    if (response.errorBody() != null) {
+                        try {
+                            // errorBody().string() solo puede ser llamado UNA VEZ
+                            errorMensaje = response.errorBody().string();
+                        } catch (java.io.IOException e) {
+                            e.printStackTrace();
+                            errorMensaje = "Error al leer la respuesta del servidor.";
+                        }
+                    }
+
+                    // Imprime el error real en la consola de Logcat (¡MUY IMPORTANTE!)
+                    Log.e("API_REGISTRO_FALLO", "Código: " + response.code() + " | Mensaje: " + errorMensaje);
+
+                    // Muestra un Toast más útil al usuario
+                    if (response.code() == 409) { // 409 = Conflict (Este SÍ es "Usuario ya existe")
+                        Toast.makeText(Actividad_Registrarse.this, "Usuario o correo ya existe.", Toast.LENGTH_LONG).show();
+                    } else if (response.code() == 400) { // 400 = Bad Request (Datos inválidos o... ¡Rangos no encontrados!)
+                        Toast.makeText(Actividad_Registrarse.this, "Datos inválidos (Revise Logcat).", Toast.LENGTH_LONG).show();
+                    } else { // 500 = Internal Server Error u otro
+                        Toast.makeText(Actividad_Registrarse.this, "Error en el servidor (Revise Logcat).", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<UsuarioPublicoDto> call, Throwable t) {
+                // Este error es de CONEXIÓN (ej. sin internet, URL mal escrita, API caída)
+                String falloMensaje = (t.getMessage() != null) ? t.getMessage() : "Error de conexión";
                 Toast.makeText(Actividad_Registrarse.this, "No se pudo conectar al servidor.", Toast.LENGTH_LONG).show();
-                Log.e("API_FALLO", t.getMessage());
+                Log.e("API_REGISTRO_FALLO", "Fallo de red: " + falloMensaje);
             }
         });
     }
