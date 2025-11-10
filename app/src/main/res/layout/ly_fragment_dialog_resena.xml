@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/dialog_background"> <TextView
+    android:id="@+id/dialog_title"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Escribe tu Reseña"
+    android:textSize="20sp"
+    android:textStyle="bold"
+    android:textColor="@android:color/black" />
+
+    <!-- Calificación de estrella y comentario -->
+    <RatingBar
+        android:id="@+id/dialog_rating_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:numStars="5"
+        android:stepSize="0.5"
+        android:theme="@style/Theme.AppCompat.Light" /><EditText
+        android:id="@+id/dialog_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="Escribe tu comentario aquí..."
+        android:inputType="textMultiLine"
+        android:minLines="3"
+        android:gravity="top"
+        android:background="@drawable/edittext_background" android:padding="12dp" />
+
+    <!--Botones de cancelar y guardar-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="24dp"
+        android:gravity="end">
+
+        <!--Boton para cancelar la reseña-->
+        <Button
+            android:id="@+id/dialog_button_cancelar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancelar"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:textColor="#808080" />
+
+        <!-- Boton para guardar la reseña -->
+        <Button
+            android:id="@+id/dialog_button_guardar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Guardar"
+            android:layout_marginStart="16dp"
+            android:backgroundTint="#1ED760" android:textColor="@android:color/white" />
+    </LinearLayout>
+
+</LinearLayout>

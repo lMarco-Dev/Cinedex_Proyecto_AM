@@ -7,11 +7,13 @@ import com.example.cinedex.Data.Models.DTOs.UsuarioLoginDto;
 import com.example.cinedex.Data.Models.DTOs.UsuarioPublicoDto;
 import com.example.cinedex.Data.Models.DTOs.UsuarioRegistroDto;
 import com.example.cinedex.Data.Models.Reseña;
+import com.example.cinedex.Data.Models.ReseñaRequest;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -29,10 +31,17 @@ public interface CineDexApiService {
     Call<UsuarioPublicoDto> registrarUsuario(@Body UsuarioRegistroDto registroDto);
 
     @PUT("api/Usuarios/{id}")
-    Call<Void> actualizarUsuario(@Path("id") int idUsuario, @Body UsuarioActualizarDto actualizarDto);
+    Call<Void> actualizarUsuario(
+            @Header("Authorization") String authToken,
+            @Path("id") int idUsuario,
+            @Body UsuarioActualizarDto actualizarDto
+    );
 
     @DELETE("api/Usuarios/{id}")
-    Call<Void> deleteUsuario(@Path("id") int idUsuario);
+    Call<Void> deleteUsuario(
+            @Header("Authorization") String authToken,
+            @Path("id") int idUsuario
+    );
 
     // --- Endpoitns para el login ---
     @POST("api/Usuarios/login")
@@ -51,14 +60,27 @@ public interface CineDexApiService {
     @GET("api/Reseñas/PorPelicula/{idPelicula}")
     Call<List<Reseña>> getResenasPorPelicula(@Path("idPelicula") int idPelicula);
 
+    //Crear
     @POST("api/Reseñas")
-    Call<Reseña> postResena(@Body Reseña resena);
+    Call<Reseña> postResena(
+            @Header("Authorization") String authToken,
+            @Body ReseñaRequest reseñaRequest
+    );
 
+    //Actualizar
     @PUT("api/Reseñas/{id}")
-    Call<Void> putResena(@Path("id") int idResena, @Body Reseña resena);
+    Call<Void> putResena(
+            @Header("Authorization") String authToken,
+            @Path("id") int idReseña,
+            @Body ReseñaRequest reseñaRequest
+    );
 
+    // DELETE (Borrar)
     @DELETE("api/Reseñas/{id}")
-    Call<Void> deleteResena(@Path("id") int idResena);
+    Call<Void> deleteResena(
+            @Header("Authorization") String authToken,
+            @Path("id") int idReseña
+    );
 
 }
 

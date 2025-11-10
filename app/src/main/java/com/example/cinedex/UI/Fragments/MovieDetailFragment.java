@@ -1,5 +1,7 @@
 package com.example.cinedex.UI.Fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +11,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +22,10 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
 import com.example.cinedex.Data.Models.Movie;
+import com.example.cinedex.Data.Models.Reseña;
+import com.example.cinedex.Data.Models.ReseñaRequest;
+import com.example.cinedex.Data.Network.CineDexApiClient;
+import com.example.cinedex.Data.Network.CineDexApiService;
 import com.example.cinedex.Data.Network.TmdbClient;
 import com.example.cinedex.Data.Network.TmdbApiService;
 import com.example.cinedex.R;
@@ -27,11 +35,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MovieDetailFragment extends Fragment {
+public class MovieDetailFragment extends Fragment implements ResenaFragment.ResenaDialogListener {
 
     private final String TMDB_API_KEY = "f908b6414babca36cf721d90d6b85e1f";
     private int movieId;
+
+    // Servicios de API
     private TmdbApiService apiService;
+    private CineDexApiService cineDexApiService;
 
     // Vistas
     private ImageView detailBackdrop, detailPoster;
@@ -47,13 +58,15 @@ public class MovieDetailFragment extends Fragment {
         if (getArguments() != null) {
             this.movieId = getArguments().getInt("movieId");
         }
+
+        //Inicializamos las API
         apiService = TmdbClient.getApiService();
+        cineDexApiService = CineDexApiClient.getApiService();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              Bundle savedInstanceState) {
-        // Usa tu nuevo layout 'ly_movie_detail'
         return inflater.inflate(R.layout.ly_fragment_movie_detail, container, false);
     }
 
@@ -79,6 +92,7 @@ public class MovieDetailFragment extends Fragment {
         // Configurar el botón de reseña
         detailReviewButton.setOnClickListener(v -> {
             Log.d("DetailFragment", "Botón de reseña presionado");
+            mostrarDialogResena();
         });
 
         // Cargar los datos
@@ -154,5 +168,91 @@ public class MovieDetailFragment extends Fragment {
             Glide.with(getContext()).load(backdropUrl).into(detailBackdrop);
             Glide.with(getContext()).load(posterUrl).into(detailPoster);
         }
+    }
+
+    // ---- Metodos para mostrar la realización de la reseña -----
+    private  void mostrarDialogResena() {
+
+        // 1. Crear una instancia de diálogo
+        ResenaFragment dialog = new ResenaFragment();
+
+        // 2. Enganchamos el listener
+        dialog.setResenaDialogListener(this);
+
+        // 3. Muestra el diálogo
+        dialog.show(getParentFragmentManager(), "ResenaDialog");
+    }
+
+    // ---- Metodos para mostrar la realización de la reseña -----
+    @Override
+    public void onResenaGuardada(String comentario, float puntaje) {
+
+        Log.d("[DETAILFRAGMENT]", "Datos recibidos del diálogo: " + comentario + " / " + puntaje);
+
+        // 1. Obtener los datos de sesion(Id y Token de usuario)
+        int idUsuario = getUsuarioIdLogueado();
+        String token = getAuthToken();
+
+        // Validar usuario
+        if(idUsuario == -1 || token.isEmpty()) {
+            Toast.makeText(getContext(), "Error: No se encontró sesión de usuario.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // 2. Crear el objeto de solicitud
+        ReseñaRequest request = new ReseñaRequest(idUsuario, this.movieId, comentario, puntaje);
+
+        // 3. Enviar la reseña a tu API de CineDex
+        enviarResena(token, request);
+    }
+
+    //
+     // ---- Método que llama a Retrofit
+    //
+    private void enviarResena(String token, ReseñaRequest request) {
+
+        Toast.makeText(getContext(), "Guardando reseña...", Toast.LENGTH_SHORT).show();
+
+        // Prepara el token de autorización
+        String authToken = "Bearer " + token;
+
+        Call<Reseña> call = cineDexApiService.postResena(authToken, request);
+
+        call.enqueue(new Callback<Reseña>() {
+            @Override
+            public void onResponse(Call<Reseña> call, Response<Reseña> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // ¡Éxito!
+                    Toast.makeText(getContext(), "¡Reseña guardada con éxito!", Toast.LENGTH_LONG).show();
+
+                } else {
+                    Toast.makeText(getContext(), "Error al guardar la reseña.", Toast.LENGTH_SHORT).show();
+                    Log.e("DetailFragment_API", "Error API: " + response.code() + " - " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Reseña> call, Throwable t) {
+                Toast.makeText(getContext(), "Error de conexión.", Toast.LENGTH_SHORT).show();
+                Log.e("DetailFragment_API", "Fallo de red: " + t.getMessage());
+            }
+        });
+    }
+
+    //
+    // ---- Método que Sesión de Usuario de obtención de Id y token
+    //
+    private int getUsuarioIdLogueado() {
+
+        SharedPreferences prefs = getActivity().getSharedPreferences("CineDexPrefs", Context.MODE_PRIVATE);
+
+        return  prefs.getInt("USER_ID", -1);
+    }
+
+    private String getAuthToken() {
+
+        SharedPreferences prefs = getActivity().getSharedPreferences("CineDexPrefs", Context.MODE_PRIVATE);
+
+        return prefs.getString("AUTH_TOKEN", "");
     }
 }

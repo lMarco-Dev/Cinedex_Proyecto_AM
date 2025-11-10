@@ -6,44 +6,41 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 
 public class Reseña {
-    @SerializedName("IdReseña")
+    @SerializedName("id_reseña")
     private int idReseña;
 
-    @SerializedName("IdUsuario")
+    @SerializedName("id_usuario")
     private int idUsuario;
 
-    @SerializedName("IdPelicula")
+    @SerializedName("id_pelicula")
     private int idPelicula;
 
-    @SerializedName("Comentario")
-    private String comentario;
+    @SerializedName("reseña_texto")
+    private String reseñaTexto;
 
-    @SerializedName("Calificacion")
-    private float calificacion;
+    @SerializedName("puntuacion")
+    private float puntuacion;
 
-    @SerializedName("Fecha")
-    private Date fecha;
+    @SerializedName("fecha_coleccion")
+    private Date fechaColeccion;
 
     // --- Objetos Anidados (para GET) ---
     @SerializedName("Usuario")
     private UsuarioPublicoDto usuario;
 
     @SerializedName("Pelicula")
-    private Movie pelicula; // Reutilizamos tu modelo Movie existente
+    private Movie pelicula;
 
-    // Constructor para CREAR una reseña (POST)
-    public Reseña(int idUsuario, int idPelicula, String comentario, float calificacion) {
-        this.idUsuario = idUsuario;
-        this.idPelicula = idPelicula;
-        this.comentario = comentario;
-        this.calificacion = calificacion;
-    }
+    // Constructor vacio
+    public Reseña() {}
 
     // (Getters)
     public int getIdReseña() { return idReseña; }
-    public String getComentario() { return comentario; }
-    public float getCalificacion() { return calificacion; }
-    public Date getFecha() { return fecha; }
+    public int getIdUsuario() { return idUsuario; }
+    public int getIdPelicula() { return idPelicula; }
+    public String getReseñaTexto() { return reseñaTexto; }
+    public float getPuntuacion() { return puntuacion; }
+    public Date getFechaColeccion() { return fechaColeccion; }
     public UsuarioPublicoDto getUsuario() { return usuario; }
     public Movie getPelicula() { return pelicula; }
 }
