@@ -11,7 +11,7 @@
         android:id="@+id/fondo_login"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/fondo_login"
+        android:src="@drawable/fondo_login_blurred"
         android:scaleType="centerCrop"
         android:contentDescription="@string/fondo_login"
         app:layout_constraintTop_toTopOf="parent"

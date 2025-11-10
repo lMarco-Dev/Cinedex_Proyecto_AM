@@ -75,32 +75,28 @@ public class Actividad_Registrarse extends AppCompatActivity {
             public void onResponse(Call<UsuarioPublicoDto> call, Response<UsuarioPublicoDto> response) {
 
                 if (response.isSuccessful() && response.body() != null) {
-                    // ------ ÉXITO REAL (Código 2xx) ------
                     UsuarioPublicoDto usuarioCreado = response.body();
 
                     // ✅ Guardar usuario localmente
                     Usuario usuarioLocal = new Usuario();
                     usuarioLocal.setNombreUsuario(usuarioCreado.getNombreUsuario());
-                    usuarioLocal.setEmail(registroDto.getEmail()); // Email no viene en la respuesta pública
-                    // ¡No guardes la contraseña en la BD local! (por seguridad)
-                    // usuarioLocal.setContraseña(registroDto.getContrasena());
-                    usuarioLocal.setNombres(usuarioCreado.getNombres()); // Usar la respuesta de la API
-                    usuarioLocal.setApellidos(usuarioCreado.getApellidos()); // Usar la respuesta de la API
-                    usuarioLocal.setIdRangoActual(1); // Asumir rango 1 (luego puedes mejorarlo)
+                    usuarioLocal.setEmail(registroDto.getEmail());
+                    usuarioLocal.setNombres(usuarioCreado.getNombres());
+                    usuarioLocal.setApellidos(usuarioCreado.getApellidos());
+                    usuarioLocal.setIdRangoActual(1);
 
-                    dao.Insertar(usuarioLocal); // ✅ GUARDAMOS EN SQLITE
+                    new Thread(() -> {
+                        dao.Insertar(usuarioLocal);
+                    }).start();
 
                     Toast.makeText(Actividad_Registrarse.this, "Registro exitoso 🎬\nBienvenido " + usuarioCreado.getNombreUsuario(), Toast.LENGTH_LONG).show();
                     finish(); // ✅ Volver al Login
                 }
                 else {
-                    // ------ AQUÍ MANEJAMOS LOS ERRORES (4xx, 5xx) ------
                     String errorMensaje = "Error desconocido al registrar."; // Mensaje por defecto
 
-                    // Intenta leer el cuerpo del error que envía la API
                     if (response.errorBody() != null) {
                         try {
-                            // errorBody().string() solo puede ser llamado UNA VEZ
                             errorMensaje = response.errorBody().string();
                         } catch (java.io.IOException e) {
                             e.printStackTrace();

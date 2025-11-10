@@ -46,7 +46,7 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         // Asumiendo que tu layout se llama 'fragment_home.xml'
-        View view = inflater.inflate(R.layout.ly_home_fragment, container, false);
+        View view = inflater.inflate(R.layout.ly_fragment_home, container, false);
 
         apiService = TmdbClient.getApiService();
         mainRecyclerView = view.findViewById(R.id.recycler_popular_movies);

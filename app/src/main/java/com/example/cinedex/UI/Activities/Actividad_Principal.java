@@ -1,6 +1,8 @@
 package com.example.cinedex.UI.Activities;
 
 import android.os.Bundle;
+import android.view.View; // <-- No olvides este import
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -16,13 +18,28 @@ public class Actividad_Principal extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ly_actividad_principal);
 
-        // Obtén el NavHostFragment y el NavController
+        // --- Tu código original ---
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment);
         NavController navController = navHostFragment.getNavController();
 
-        // Conecta el BottomNavigationView con el NavController
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
+
+
+        // --- LA SOLUCIÓN (con tus IDs correctos) ---
+
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+
+            //Obtenemos el ID
+            int id = destination.getId();
+
+            //Comparamos el ID
+            if(id == R.id.homeFragment || id == R.id.searchFragment || id == R.id.profileFragment) {
+                bottomNavigationView.setVisibility(View.VISIBLE);
+            } else {
+                bottomNavigationView.setVisibility(View.GONE);
+            }
+        });
     }
 }

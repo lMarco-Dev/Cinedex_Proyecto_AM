@@ -9,7 +9,7 @@
         android:id="@+id/homeFragment"
         android:name="com.example.cinedex.UI.Fragments.HomeFragment"
         android:label="Home"
-        tools:layout="@layout/ly_home_fragment">
+        tools:layout="@layout/ly_fragment_home">
 
         <action
             android:id="@+id/action_homeFragment_to_movieDetailFragment"
@@ -22,7 +22,7 @@
         android:name="com.example.cinedex.UI.Fragments.MovieDetailFragment"
 
         android:label="Detalle"
-        tools:layout="@layout/ly_movie_detail">
+        tools:layout="@layout/ly_fragment_movie_detail">
 
         <argument
             android:name="movieId"

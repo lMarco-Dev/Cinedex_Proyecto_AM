@@ -45,13 +45,6 @@ public class Actividad_Login extends AppCompatActivity {
         txtIrARegistro = findViewById(R.id.txtRegistrar);
         fondoLogin = findViewById(R.id.fondo_login);
 
-        // -- Efecto de la imagen de fondo ---
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            fondoLogin.setRenderEffect(RenderEffect.createBlurEffect(25f, 25f, Shader.TileMode.CLAMP));
-        } else {
-            fondoLogin.setAlpha(0.4f);
-        }
-
         // -- Dirigir al registro --
         txtIrARegistro.setOnClickListener(v -> {
             Intent intent = new Intent(this, Actividad_Registrarse.class);

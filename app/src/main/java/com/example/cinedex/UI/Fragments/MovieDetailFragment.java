@@ -54,7 +54,7 @@ public class MovieDetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              Bundle savedInstanceState) {
         // Usa tu nuevo layout 'ly_movie_detail'
-        return inflater.inflate(R.layout.ly_movie_detail, container, false);
+        return inflater.inflate(R.layout.ly_fragment_movie_detail, container, false);
     }
 
     @Override
