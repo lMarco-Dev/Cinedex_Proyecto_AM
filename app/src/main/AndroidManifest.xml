@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -27,6 +29,15 @@
         <activity
             android:name=".UI.Activities.Actividad_Login"
             android:exported="false" />
+        <activity android:name=".UI.Activities.ActividadResena"
+            android:exported="false" />
+        <activity android:name=".UI.Activities.ActividadTerminos"
+            android:exported="false" />
+        <activity android:name=".UI.Activities.Actividad_Perfil"
+            android:exported="false" />
+        <activity android:name=".UI.Activities.Actividad_Perfil"
+            android:exported="false" />
+
         <activity
             android:name=".UI.Activities.MainActivity"
             android:exported="true">

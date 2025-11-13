@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_dark">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_resena"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/gray_medium"
+            app:title="Escribir Reseña"
+            app:titleTextColor="@color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Info usuario (nombre + correo) -->
+            <LinearLayout
+                android:id="@+id/layoutUsuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:background="@drawable/card_transparent_dark"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/imgAvatarUsuario"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:src="@drawable/ic_person"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="avatar"
+                    android:background="@drawable/cicle_gradient" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingStart="12dp">
+
+                    <TextView
+                        android:id="@+id/tvNombreUsuario"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:text="Nombre Apellido" />
+
+                    <TextView
+                        android:id="@+id/tvCorreoUsuario"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_gray"
+                        android:text="correo@ejemplo.com"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Formulario de reseña -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="12dp"
+                android:padding="12dp"
+                android:background="@drawable/card_transparent_dark">
+
+                <!-- Spinner / selector de película -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Película"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"/>
+
+                <Spinner
+                    android:id="@+id/spinnerPeliculas"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/edittext_rounded_border"/>
+
+                <!-- Género / Año (opcional lectura) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp">
+
+                    <EditText
+                        android:id="@+id/etGenero"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Género"
+                        android:background="@drawable/edittext_rounded_border"
+                        android:textColor="@color/white"/>
+
+                    <EditText
+                        android:id="@+id/etAnio"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:hint="Año"
+                        android:inputType="number"
+                        android:background="@drawable/edittext_rounded_border"
+                        android:textColor="@color/white"/>
+                </LinearLayout>
+
+                <!-- Rating -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Calificación"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp"/>
+
+                <RatingBar
+                    android:id="@+id/ratingBarPuntaje"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:stepSize="0.5"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:layout_marginTop="6dp"/>
+
+                <!-- Comentario -->
+                <EditText
+                    android:id="@+id/etComentario"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:hint="Escribe tu reseña..."
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/edittext_background"
+                    android:textColor="@color/white"/>
+
+                <!-- Mostrar ubicación (obtenida) -->
+                <TextView
+                    android:id="@+id/tvUbicacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ubicación: No disponible"
+                    android:textColor="@color/text_gray"
+                    android:layout_marginTop="8dp"
+                    android:textSize="12sp"/>
+
+                <!-- Botones -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="12dp">
+
+                    <Button
+                        android:id="@+id/btnObtenerUbicacion"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:text="Obtener ubicación"
+                        android:backgroundTint="@color/emerald_green"
+                        android:textColor="@color/white"/>
+
+                    <Button
+                        android:id="@+id/btnPublicarResena"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:text="Publicar"
+                        android:backgroundTint="@color/gold"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Estadísticas resumen: cuantas reseñas por estrellas -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp"
+                android:weightSum="5">
+
+                <!-- Para simplificar sólo texto -->
+                <TextView
+                    android:id="@+id/tvResumenEstrellas"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Resumen: ★5: 0  ★4: 0  ★3: 0  ★2: 0  ★1: 0"
+                    android:textColor="@color/text_gray"/>
+            </LinearLayout>
+
+            <!-- Lista de reseñas -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvResenas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:clipToPadding="false"
+                tools:listitem="@layout/item_resena"/>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -3,5 +3,5 @@
     <string name="welcome_text">Bienvenido a\n<font color="#007A33">CINEDEX</font></string>
     <string name="arrow_icon">Icono de flecha</string>
     <string name="fondo_login">Fondo de inicio de sesión</string>
-
+    <string name="terminos_placeholder">Aquí van tus Términos y Condiciones... (pega el texto real).</string>
 </resources>

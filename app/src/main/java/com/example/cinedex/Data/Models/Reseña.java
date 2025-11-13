@@ -43,4 +43,11 @@ public class Reseña {
     public Date getFechaColeccion() { return fechaColeccion; }
     public UsuarioPublicoDto getUsuario() { return usuario; }
     public Movie getPelicula() { return pelicula; }
+    // dentro de la clase Reseña
+    public void setIdReseña(int idReseña) { this.idReseña = idReseña; }
+    public void setIdUsuario(int idUsuario) { this.idUsuario = idUsuario; }
+    public void setIdPelicula(int idPelicula) { this.idPelicula = idPelicula; }
+    public void setReseñaTexto(String reseñaTexto) { this.reseñaTexto = reseñaTexto; }
+    public void setPuntuacion(float puntuacion) { this.puntuacion = puntuacion; }
+
 }

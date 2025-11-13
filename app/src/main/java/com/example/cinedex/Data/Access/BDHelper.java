@@ -31,6 +31,24 @@ public class BDHelper extends SQLiteOpenHelper {
             COL_NOMBRES + " VARCHAR(100) NOT NULL, " +
             COL_APELLIDOS + " VARCHAR(100) NOT NULL, " +
             COL_RANGO_ACTUAL + " INTEGER NOT NULL)";
+// dentro de la clase BDHelper
+    String tablaResena = "CREATE TABLE ResenaLocal(" +
+            "IdResena INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "IdUsuario INTEGER NOT NULL, " +
+            "IdPelicula INTEGER NOT NULL, " +
+            "TituloPelicula VARCHAR(150), " +
+            "Genero VARCHAR(80), " +
+            "Anio INTEGER, " +
+            "Sinopsis TEXT, " +
+            "Actores TEXT, " +
+            "Direccion TEXT, " +
+            "Comentario TEXT, " +
+            "Puntuacion REAL, " +
+            "Latitud REAL, " +
+            "Longitud REAL, " +
+            "FechaRegistro TEXT" +
+            ")";
+
 
     public BDHelper(@Nullable Context context) {
         super(context, NOMBRE_BD, null, VERSION_BD);
@@ -39,11 +57,14 @@ public class BDHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(tabla_User);
+        db.execSQL(tablaResena);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
         db.execSQL("DROP TABLE IF EXISTS Usuario");
         db.execSQL(tabla_User);
+        db.execSQL("DROP TABLE IF EXISTS ResenaLocal");
+        db.execSQL(tablaResena);
     }
 }

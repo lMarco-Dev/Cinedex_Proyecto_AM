@@ -1,88 +1,80 @@
-package com.example.cinedex.UI.Fragments;
+package com.example.cinedex.UI.Adapters;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.os.Bundle;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RatingBar;
-import android.widget.Toast;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.DialogFragment;
-
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.cinedex.Data.Models.Reseña;
 import com.example.cinedex.R;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Locale;
 
-public class ResenaFragment extends DialogFragment {
+public class ResenaAdapter extends RecyclerView.Adapter<ResenaAdapter.ViewHolder> {
 
-    public interface ResenaDialogListener{
-        void onResenaGuardada(String comentario, float puntaje);
+    private List<Reseña> lista;
+    private Context ctx;
+
+    public ResenaAdapter(List<Reseña> lista, Context ctx) {
+        this.lista = lista;
+        this.ctx = ctx;
     }
-
-    private ResenaDialogListener listener;
-
-    private EditText etComentario;
-    private RatingBar rbPuntaje;
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-
-        //Insertamos el layout de la reseña
-        LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.ly_fragment_dialog_resena, null);
-
-        //Conectamos la vista al layout
-        etComentario = view.findViewById(R.id.dialog_edit_text);
-        rbPuntaje = view.findViewById(R.id.dialog_rating_bar);
-        Button btnCancelar = view.findViewById(R.id.dialog_button_cancelar);
-        Button btnGuardar = view.findViewById(R.id.dialog_button_guardar);
-
-        // Configuración de botones
-        btnCancelar.setOnClickListener(v -> {
-            dismiss();
-        });
-
-        btnGuardar.setOnClickListener(v -> {
-            // 1. Obtener los datos
-            String comentario = etComentario.getText().toString().trim();
-            float puntaje = rbPuntaje.getRating();
-
-            // 2. Validar datos
-            if (comentario.isEmpty()) {
-                etComentario.setError("El comentario no puede estar vacío");
-                return;
-            }
-            if (puntaje == 0) {
-                Toast.makeText(getContext(), "Por favor, selecciona un puntaje", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            // 3. Enviar los datos al MovieDetailFragment
-            if(listener != null) {
-                listener.onResenaGuardada(comentario, puntaje);
-            }
-
-            // 4. Cerramos la reseña
-            dismiss();
-        });
-
-        // Crear el constructor del dialogo
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
-        builder.setView(view);
-
-        return builder.create();
+    public ResenaAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(ctx).inflate(R.layout.item_resena, parent, false);
+        return new ViewHolder(v);
     }
 
-    public void setResenaDialogListener(ResenaDialogListener listener) {
-        this.listener = listener;
+    @Override
+    public void onBindViewHolder(@NonNull ResenaAdapter.ViewHolder holder, int position) {
+        Reseña r = lista.get(position);
+
+        holder.itemNombre.setText(r.getUsuario() != null ? r.getUsuario().getNombreUsuario() : "Anónimo");
+        String meta = (r.getPelicula() != null ? r.getPelicula().getTitle() : "Película") +
+                " · " + r.getPuntuacion() + " ★";
+        holder.itemMeta.setText(meta);
+
+        holder.itemComentario.setText(r.getReseñaTexto() != null ? r.getReseñaTexto() : "");
+        if (r.getFechaColeccion() != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            // holder.itemFecha.setText(sdf.format(r.getFechaColeccion()));
+        }
+
+        // ubicación (puede ser null)
+        if (r.getUsuario() != null) {
+            // no hacemos nada con avatar por ahora
+        }
+        holder.itemUbicacion.setText(r.getFechaColeccion() != null ? "Fecha: " + r.getFechaColeccion().toString() : "");
+        // si tienes campo de ubicacion en tu modelo, muéstralo
+    }
+
+    @Override
+    public int getItemCount() {
+        return lista.size();
+    }
+
+    public void setData(List<Reseña> data) {
+        this.lista = data;
+        notifyDataSetChanged();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView itemAvatar;
+        TextView itemNombre, itemMeta, itemComentario, itemUbicacion;
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            itemAvatar = itemView.findViewById(R.id.item_avatar);
+            itemNombre = itemView.findViewById(R.id.item_nombre);
+            itemMeta = itemView.findViewById(R.id.item_meta);
+            itemComentario = itemView.findViewById(R.id.item_comentario);
+            itemUbicacion = itemView.findViewById(R.id.item_ubicacion);
+        }
     }
 }

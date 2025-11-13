@@ -101,6 +101,18 @@ public class Actividad_Login extends AppCompatActivity {
 
                     //Enviamos al usuario a la actividad principal
                     Toast.makeText(Actividad_Login.this, "Bienvenido, " + usuarioLogueado.getNombreUsuario() + "!", Toast.LENGTH_SHORT).show();
+                    SharedPreferences prefs = getSharedPreferences("CineDexPrefs", MODE_PRIVATE);
+                    boolean acepto = prefs.getBoolean("TERMINOS_ACEPTADOS", false);
+                    if (!acepto) {
+                        Intent t = new Intent(Actividad_Login.this, ActividadTerminos.class);
+                        startActivity(t);
+                        // no finish() aún: tras aceptar se vuelve al login o puedes redirigir desde Terminos
+                    } else {
+                        // continuar normal
+                        Intent intent = new Intent(Actividad_Login.this, Actividad_Principal.class);
+                        startActivity(intent);
+                        finish();
+                    }
 
                     Intent intent = new Intent(Actividad_Login.this, Actividad_Principal.class);
                     startActivity(intent);
