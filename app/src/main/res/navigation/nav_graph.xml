@@ -33,7 +33,7 @@
         android:id="@+id/searchFragment"
         android:name="com.example.cinedex.UI.Fragments.EventosFragment"
         android:label="Buscar"
-        tools:layout="@layout/ly_fragment_search" />
+        tools:layout="@layout/ly_anuncios" />
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.cinedex.UI.Fragments.ProfileFragment"
