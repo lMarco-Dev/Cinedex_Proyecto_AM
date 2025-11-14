@@ -99,7 +99,7 @@ public class Actividad_Login extends AppCompatActivity {
                     editor.apply();
 
                     //Enviamos al usuario a la actividad principal
-                    Toast.makeText(Actividad_Login.this, "Bienvenido, " + usuarioLogueado.getNombreUsuario() + "!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Actividad_Login.this, "Bienvenido, " + usuarioLogueado.getNombres() + "!", Toast.LENGTH_SHORT).show();
 
                     // --- CORRECCIÓN 1 (Continuación): Usar un nombre diferente ---
                     SharedPreferences prefsTerminos = getSharedPreferences("CineDexPrefs", MODE_PRIVATE);
@@ -125,9 +125,6 @@ public class Actividad_Login extends AppCompatActivity {
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         finish(); // Cerramos el Login
                     }
-
-                    // --- CORRECCIÓN 2 (Continuación): Se eliminó el bloque de código duplicado que estaba aquí ---
-
                 } else {
                     Log.e("[FALLO LOGIN]", "Código: " + response.code());
                     Toast.makeText(Actividad_Login.this, "Usuario o contraseña incorrecta", Toast.LENGTH_SHORT).show();

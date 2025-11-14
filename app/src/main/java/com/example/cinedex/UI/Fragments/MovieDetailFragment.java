@@ -24,7 +24,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.bumptech.glide.Glide;
 import com.example.cinedex.Data.Models.Movie;
 import com.example.cinedex.Data.Models.Reseña;
-import com.example.cinedex.Data.Models.ReseñaRequest;
+import com.example.cinedex.Data.Models.ReseñaRequest; // ¡Importa la clase actualizada!
 import com.example.cinedex.Data.Network.CineDexApiClient;
 import com.example.cinedex.Data.Network.CineDexApiService;
 import com.example.cinedex.Data.Network.TmdbClient;
@@ -36,14 +36,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-// --- CAMBIO 1: Implementa la interfaz del NUEVO diálogo ---
+// Implementa la interfaz del DIÁLOGO
 public class MovieDetailFragment extends Fragment implements ResenaDialogFragment.ResenaDialogListener {
 
-    // ... (todas tus variables están bien: apiKey, movieId, apis, vistas, etc.) ...
     private final String TMDB_API_KEY = "f908b6414babca36cf721d90d6b85e1f";
     private int movieId;
+
+    // Servicios de API
     private TmdbApiService apiService;
     private CineDexApiService cineDexApiService;
+
+    // Vistas
     private ImageView detailBackdrop, detailPoster;
     private TextView detailTitle, detailDescription, detailMetadata;
     private RatingBar detailRating;
@@ -51,6 +54,8 @@ public class MovieDetailFragment extends Fragment implements ResenaDialogFragmen
     private Toolbar toolbar;
     private TextView detailTextRating, detailTextYear, detailTextRuntime;
 
+    // Variable para guardar la película actual
+    private Movie peliculaActual;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,7 +77,7 @@ public class MovieDetailFragment extends Fragment implements ResenaDialogFragmen
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // --- Enlazar Vistas (Todo esto está bien) ---
+        // Enlazar las vistas
         toolbar = view.findViewById(R.id.detail_toolbar);
         detailBackdrop = view.findViewById(R.id.detail_backdrop);
         detailPoster = view.findViewById(R.id.detail_poster);
@@ -94,7 +99,6 @@ public class MovieDetailFragment extends Fragment implements ResenaDialogFragmen
         fetchMovieDetails();
     }
 
-    // ... (setupToolbar, fetchMovieDetails, y updateUI están perfectos, no los toques) ...
     private void setupToolbar() {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         if (activity != null) {
@@ -126,100 +130,127 @@ public class MovieDetailFragment extends Fragment implements ResenaDialogFragmen
     }
 
     private void updateUI(Movie movie) {
+        // Guardamos el objeto película
+        this.peliculaActual = movie;
+
         detailTitle.setText(movie.getTitle());
         detailDescription.setText(movie.getOverview());
+
         float rating = (float) (movie.getVoteAverage() / 2.0);
         detailRating.setRating(rating);
+
         detailTextRating.setText(String.format(Locale.US, "%.1f", movie.getVoteAverage()));
+
         if (movie.getReleaseDate() != null && !movie.getReleaseDate().isEmpty()) {
             detailTextYear.setText(movie.getReleaseDate().split("-")[0]);
         } else {
             detailTextYear.setText("N/A");
         }
+
         if (movie.getRuntime() > 0) {
             detailTextRuntime.setText(movie.getRuntime() + " min");
         } else {
             detailTextRuntime.setText("N/A");
         }
+
         String backdropUrl = "https://image.tmdb.org/t/p/w780" + movie.getBackdropPath();
         String posterUrl = "https://image.tmdb.org/t/p/w500" + movie.getPosterPath();
+
         if (getContext() != null) {
             Glide.with(getContext()).load(backdropUrl).into(detailBackdrop);
             Glide.with(getContext()).load(posterUrl).into(detailPoster);
         }
     }
 
-    // --- CAMBIO 2: Llama a la NUEVA clase de diálogo ---
+    // Llama al DIÁLOGO
     private void mostrarDialogResena() {
-        // 1. Crear una instancia de diálogo (del nuevo DialogFragment)
         ResenaDialogFragment dialog = new ResenaDialogFragment();
-
-        // 2. Enganchamos el listener
         dialog.setResenaDialogListener(this);
-
-        // 3. Muestra el diálogo (¡Ahora .show() sí funciona!)
         dialog.show(getParentFragmentManager(), "ResenaDialog");
     }
 
-    // --- CAMBIO 3: Este método AHORA es llamado por ResenaDialogFragment ---
+    // --- ¡¡MÉTODO CORREGIDO!! ---
     @Override
     public void onResenaGuardada(String comentario, float puntaje) {
-        Log.d("[DETAILFRAGMENT]", "Datos recibidos del diálogo: " + comentario + " / " + puntaje);
+        Log.d("[DEBUG_RESEÑA]", "Datos recibidos del diálogo: Comentario=" + comentario + " | Puntaje=" + puntaje);
 
-        // 1. Obtener los datos de sesion(Id y Token de usuario)
         int idUsuario = getUsuarioIdLogueado();
         String token = getAuthToken();
 
-        // --- CAMBIO 4: Corrección de SharedPreferences (¡Error sutil!) ---
-        // Debes usar las mismas keys que en tu Actividad_Login
-        // int idUsuario = getUsuarioIdLogueado();
-        // String token = getAuthToken(); // Aún no guardas token, lo dejaremos vacío
+        // VALIDACIÓN 1: ¿Se cargó la película?
+        if (this.peliculaActual == null) {
+            Toast.makeText(getContext(), "Error: Datos de la película no cargados. Intenta de nuevo.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        if(idUsuario == -1) { // || token.isEmpty()) { -> Quitamos esto por ahora
+        // VALIDACIÓN 2: ¿Está el usuario logueado?
+        if(idUsuario == -1) {
             Toast.makeText(getContext(), "Error: No se encontró sesión de usuario.", Toast.LENGTH_LONG).show();
             return;
         }
 
-        // 2. Crear el objeto de solicitud
-        ReseñaRequest request = new ReseñaRequest(idUsuario, this.movieId, comentario, puntaje);
+        // VALIDACIÓN 3: ¿El puntaje es válido?
+        if (puntaje < 0.5f) {
+            Toast.makeText(getContext(), "Error: El puntaje no puede ser 0.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // --- ¡¡AQUÍ ESTÁ LA LÍNEA CORREGIDA!! ---
+        // Ahora le pasamos los 6 argumentos que el constructor espera
+        ReseñaRequest request = new ReseñaRequest(
+                idUsuario,
+                this.peliculaActual.getId(),
+                comentario,
+                puntaje,
+                this.peliculaActual.getTitle(),
+                this.peliculaActual.getPosterPath()
+        );
 
         // 3. Enviar la reseña a tu API de CineDex
-        enviarResena(token, request); // 'token' aquí será "" (vacío), pero la llamada se hará
+        enviarResena(token, request);
     }
 
-    // ... (enviarResena está bien) ...
+
+    // Método que llama a Retrofit (con el Logcat de depuración)
     private void enviarResena(String token, ReseñaRequest request) {
         Toast.makeText(getContext(), "Guardando reseña...", Toast.LENGTH_SHORT).show();
         String authToken = "Bearer " + token;
+
         Call<Reseña> call = cineDexApiService.postResena(authToken, request);
+
         call.enqueue(new Callback<Reseña>() {
             @Override
             public void onResponse(Call<Reseña> call, Response<Reseña> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    Log.d("API_POST_RESEÑA", "¡Éxito! El body no es nulo. ID Creado: " + response.body().getIdReseña());
                     Toast.makeText(getContext(), "¡Reseña guardada con éxito!", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getContext(), "Error al guardar la reseña.", Toast.LENGTH_SHORT).show();
-                    Log.e("DetailFragment_API", "Error API: " + response.code() + " - " + response.message());
+                    String errorBody = "N/A";
+                    try {
+                        if (response.errorBody() != null) {
+                            errorBody = response.errorBody().string();
+                        }
+                    } catch (Exception e) {}
+
+                    Log.e("API_POST_RESEÑA", "Error de API: " + response.code() + " - " + response.message() + " - " + errorBody);
+                    Toast.makeText(getContext(), "Error de API: " + response.code() + " - " + errorBody, Toast.LENGTH_LONG).show();
                 }
             }
             @Override
             public void onFailure(Call<Reseña> call, Throwable t) {
-                Toast.makeText(getContext(), "Error de conexión.", Toast.LENGTH_SHORT).show();
-                Log.e("DetailFragment_API", "Fallo de red: " + t.getMessage());
+                Log.e("API_POST_RESEÑA", "Fallo de conexión: " + t.getMessage());
+                Toast.makeText(getContext(), "Error de CONEXIÓN", Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    // --- CAMBIO 5: Arreglar SharedPreferences ---
-    // Estás buscando en "CineDexPrefs" con "USER_ID",
-    // pero en Actividad_Login guardaste en "sesion_usuario" con "ID_USUARIO".
+    // Métodos de SharedPreferences (Corregidos para usar "sesion_usuario")
     private int getUsuarioIdLogueado() {
         SharedPreferences prefs = getActivity().getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE);
         return  prefs.getInt("ID_USUARIO", -1);
     }
 
     private String getAuthToken() {
-        // Aún no estás guardando esto en el Login, así que siempre devolverá ""
         SharedPreferences prefs = getActivity().getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE);
         return prefs.getString("AUTH_TOKEN", "");
     }

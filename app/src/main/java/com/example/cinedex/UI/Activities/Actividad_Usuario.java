@@ -1,3 +1,4 @@
+// Archivo: UI/Activities/Actividad_Usuario.java
 package com.example.cinedex.UI.Activities;
 
 import android.content.Intent;
@@ -6,11 +7,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.view.View;
-import android.widget.*;
+import android.widget.Button; // Importaciones limpias
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+
+// --- IMPORTACIONES AÑADIDAS ---
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.cinedex.UI.Adapters.ResenaAdapter; // <-- ¡Importamos el adaptador correcto!
 
 import com.example.cinedex.Data.Access.DAOResena;
 import com.example.cinedex.Data.Access.DAOUsuario;
@@ -20,22 +30,11 @@ import com.example.cinedex.Data.Network.CineDexApiClient;
 import com.example.cinedex.Data.Network.CineDexApiService;
 import com.example.cinedex.R;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.List; // Importamos solo List
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-/*
- Actividad_Perfil:
- - Muestra nombre + apellidos (clic -> editar)
- - Muestra correo
- - Permite editar nombres/apellidos y enviar a la API (si hay token)
- - Permite cambiar contraseña (local via DAOUsuario)
- - Muestra foto de usuario (picker) y guarda la URI en SharedPreferences
- - Lista reseñas hechas por el usuario (DAOResena.ListarPorUsuario)
-*/
 
 public class Actividad_Usuario extends AppCompatActivity {
 
@@ -43,7 +42,11 @@ public class Actividad_Usuario extends AppCompatActivity {
     TextView tvNombreCompleto, tvCorreo;
     EditText etNombres, etApellidos, etCorreoEdit, etCambiarPass, etConfirmPass;
     Button btnEditarGuardar, btnCambiarPass, btnSeleccionarFoto;
-    ListView lvResenas;
+
+    // --- CAMBIADO: De ListView a RecyclerView ---
+    RecyclerView rvResenas; // <-- 1. Cambiado de ListView
+    ResenaAdapter resenaAdapter; // <-- 2. Añadido el adaptador
+
     DAOResena daoResena;
     DAOUsuario daoUsuario;
 
@@ -72,12 +75,16 @@ public class Actividad_Usuario extends AppCompatActivity {
         etConfirmPass = findViewById(R.id.etConfirmarPassword);
         btnSeleccionarFoto = findViewById(R.id.btnSeleccionarFoto);
 
-        lvResenas = findViewById(R.id.lvResenasUsuario);
+        // --- CORREGIDO: Buscamos el ID del RecyclerView ---
+        // Esta era tu línea 75, ahora está corregida
+        // Tu XML tiene el ID "lvResenasUsuario" (lo cual está bien)
+        // pero lo guardamos en nuestra variable de tipo RecyclerView.
+        rvResenas = findViewById(R.id.lvResenasUsuario); // <-- 3. ¡Ahora sí coincide!
 
         daoResena = new DAOResena(this);
         daoUsuario = new DAOUsuario(this);
 
-        // Obtener sesión/usuario de SharedPreferences (igual que en login)
+        // --- El resto de tu lógica de SharedPreferences y botones está PERFECTA ---
         SharedPreferences prefs = getSharedPreferences("sesion_usuario", MODE_PRIVATE);
         usuarioId = prefs.getInt("ID_USUARIO", -1);
         String nombres = prefs.getString("NOMBRES", "");
@@ -85,21 +92,19 @@ public class Actividad_Usuario extends AppCompatActivity {
         String nombreUsuario = prefs.getString("NOMBRE_USUARIO", "");
         authToken = prefs.getString("AUTH_TOKEN", ""); // puede estar vacío
 
-        // Mostrar
         tvNombreCompleto.setText((nombres + " " + apellidos).trim());
         tvCorreo.setText(nombreUsuario);
-
         etNombres.setText(nombres);
         etApellidos.setText(apellidos);
         etCorreoEdit.setText(nombreUsuario);
 
-        // foto guardada (URI) en prefs
         String fotoUriStr = prefs.getString("URI_FOTO_USUARIO", "");
         if (!TextUtils.isEmpty(fotoUriStr)) {
             ivFoto.setImageURI(Uri.parse(fotoUriStr));
         }
 
-        // editar <-> guardar
+        // --- Tu lógica de botones está bien, no la tocamos ---
+
         btnEditarGuardar.setOnClickListener(v -> {
             String newNombres = etNombres.getText().toString().trim();
             String newApellidos = etApellidos.getText().toString().trim();
@@ -108,7 +113,6 @@ public class Actividad_Usuario extends AppCompatActivity {
                 return;
             }
 
-            // Si hay token, intenta actualizar via API (PUT api/Usuarios/{id})
             if (!authToken.isEmpty() && usuarioId != -1) {
                 CineDexApiService api = CineDexApiClient.getApiService();
                 String bearer = "Bearer " + authToken;
@@ -117,39 +121,33 @@ public class Actividad_Usuario extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         if (response.isSuccessful()) {
-                            // actualizar SharedPreferences
                             SharedPreferences.Editor ed = getSharedPreferences("sesion_usuario", MODE_PRIVATE).edit();
                             ed.putString("NOMBRES", newNombres);
                             ed.putString("APELLIDOS", newApellidos);
                             ed.apply();
-
                             tvNombreCompleto.setText(newNombres + " " + newApellidos);
                             Toast.makeText(Actividad_Usuario.this, "Datos actualizados en el servidor", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(Actividad_Usuario.this, "Error al actualizar en servidor (revise log)", Toast.LENGTH_LONG).show();
                         }
                     }
-
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
                         Toast.makeText(Actividad_Usuario.this, "Error de conexión al actualizar", Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
-                // No hay token => actualizamos localmente en la BD con DAOUsuario
-                // Necesitamos construir un Usuario y usar daoUsuario.Actualizar
                 com.example.cinedex.Data.Models.Usuario u = new com.example.cinedex.Data.Models.Usuario();
                 u.setNombreUsuario(etCorreoEdit.getText().toString().trim());
                 u.setNombres(newNombres);
                 u.setApellidos(newApellidos);
-                u.setContraseña(""); // no la tocamos aquí
+                u.setContraseña("");
                 boolean ok = daoUsuario.Actualizar(u, usuarioId);
                 if (ok) {
                     SharedPreferences.Editor ed = getSharedPreferences("sesion_usuario", MODE_PRIVATE).edit();
                     ed.putString("NOMBRES", newNombres);
                     ed.putString("APELLIDOS", newApellidos);
                     ed.apply();
-
                     tvNombreCompleto.setText(newNombres + " " + newApellidos);
                     Toast.makeText(this, "Datos actualizados localmente", Toast.LENGTH_SHORT).show();
                 } else {
@@ -158,7 +156,6 @@ public class Actividad_Usuario extends AppCompatActivity {
             }
         });
 
-        // cambiar contraseña (LOCAL): actualiza tabla Usuario via DAOUsuario.Actualizar
         btnCambiarPass.setOnClickListener(v -> {
             String pass = etCambiarPass.getText().toString();
             String conf = etConfirmPass.getText().toString();
@@ -171,7 +168,6 @@ public class Actividad_Usuario extends AppCompatActivity {
                 return;
             }
 
-            // Obtener usuario local, usar DAOUsuario.Actualizar
             com.example.cinedex.Data.Models.Usuario u = new com.example.cinedex.Data.Models.Usuario();
             u.setNombreUsuario(etCorreoEdit.getText().toString().trim());
             u.setContraseña(pass);
@@ -180,7 +176,6 @@ public class Actividad_Usuario extends AppCompatActivity {
             boolean ok = daoUsuario.Actualizar(u, usuarioId);
             if (ok) {
                 Toast.makeText(this, "Contraseña actualizada localmente", Toast.LENGTH_SHORT).show();
-                // actualizar SharedPreferences si guardas algo
                 SharedPreferences.Editor ed = getSharedPreferences("sesion_usuario", MODE_PRIVATE).edit();
                 ed.putBoolean("ESTA_LOGUEADO", true);
                 ed.apply();
@@ -191,7 +186,6 @@ public class Actividad_Usuario extends AppCompatActivity {
             }
         });
 
-        // seleccionar foto -> launcher
         pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -199,7 +193,6 @@ public class Actividad_Usuario extends AppCompatActivity {
                         Uri selected = result.getData().getData();
                         if (selected != null) {
                             ivFoto.setImageURI(selected);
-                            // guardar URI en prefs
                             SharedPreferences.Editor ed = getSharedPreferences("sesion_usuario", MODE_PRIVATE).edit();
                             ed.putString("URI_FOTO_USUARIO", selected.toString());
                             ed.apply();
@@ -212,19 +205,30 @@ public class Actividad_Usuario extends AppCompatActivity {
             pickImageLauncher.launch(intent);
         });
 
-        // Cargar reseñas del usuario y mostrarlas
+        // --- Cargar reseñas del usuario y mostrarlas ---
+        // 4. Esta función ahora está corregida
         actualizarListaResenas();
 
-    }
+    } // Fin de onCreate
 
+
+    // --- MÉTODO ACTUALIZADO ---
+    // Esta función ahora usa el RecyclerView y el ResenaAdapter
     private void actualizarListaResenas() {
+
+        // 1. Obtener la lista de reseñas del DAO (esto ya lo tenías)
         List<Reseña> lista = daoResena.ListarPorUsuario(usuarioId);
-        List<String> textos = new ArrayList<>();
-        for (Reseña r : lista) {
-            String t = String.format("%.1f ★ — %s", r.getPuntuacion(), r.getReseñaTexto());
-            textos.add(t);
-        }
-        lvResenas.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, textos));
+
+        // 2. Configurar el Adaptador que ya creamos
+        resenaAdapter = new ResenaAdapter(lista);
+
+        // 3. Configurar el RecyclerView
+        rvResenas.setLayoutManager(new LinearLayoutManager(this));
+        rvResenas.setAdapter(resenaAdapter);
+
+        // 4. (IMPORTANTE) Deshabilitar el scroll anidado
+        // Esto es vital porque el RecyclerView está DENTRO de un ScrollView.
+        // Esto hace que el ScrollView principal maneje todo el scroll.
+        rvResenas.setNestedScrollingEnabled(false);
     }
 }
-
