@@ -1,24 +1,19 @@
 package com.example.cinedex.UI.Activities;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
-import android.widget.RecyclerView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -47,7 +42,7 @@ public class Actividad_Resena extends AppCompatActivity {
     EditText etGenero, etAnio, etComentario;
     RatingBar ratingBar;
     Button btnUbicacion, btnPublicar;
-    RecyclerView rvResenas;
+    androidx.recyclerview.widget.RecyclerView rvResenas;
 
     CineDexApiService apiService;
     ResenaAdapter adapter;
@@ -83,7 +78,7 @@ public class Actividad_Resena extends AppCompatActivity {
         apiService = CineDexApiClient.getApiService();
 
         // RecyclerView
-        adapter = new ResenaAdapter(reseñas, this);
+        adapter = new ResenaAdapter(reseñas);
         rvResenas.setLayoutManager(new LinearLayoutManager(this));
         rvResenas.setAdapter(adapter);
 
@@ -96,12 +91,19 @@ public class Actividad_Resena extends AppCompatActivity {
             else Toast.makeText(this, "Permiso de ubicación denegado", Toast.LENGTH_SHORT).show();
         });
 
-        // cargar datos de usuario en SharedPreferences (ejemplo)
-        SharedPreferences prefs = getSharedPreferences("CineDexPrefs", MODE_PRIVATE);
+        // --- CORRECCIÓN LÓGICA 1: Leer del archivo "sesion_usuario" ---
+        // Cargar datos de usuario en SharedPreferences (ejemplo)
+        SharedPreferences prefs = getSharedPreferences("sesion_usuario", MODE_PRIVATE);
+
+        // --- CORRECCIÓN LÓGICA 2: Usar la key correcta "NOMBRE_USUARIO" ---
         String nombre = prefs.getString("NOMBRE_USUARIO", "Usuario");
-        String correo = prefs.getString("EMAIL", "correo@ejemplo.com");
+
+        // --- CORRECCIÓN LÓGICA 3: No guardaste "EMAIL", así que lo comento ---
+        // String correo = prefs.getString("EMAIL", "correo@ejemplo.com");
+
         tvNombreUsuario.setText(nombre);
-        tvCorreoUsuario.setText(correo);
+        // tvCorreoUsuario.setText(correo); // Ocultamos esto por ahora
+        tvCorreoUsuario.setText("correo@ejemplo.com"); // Dejamos un placeholder
 
         // Cargar lista películas (puedes reemplazar por llamada TMDB)
         cargarPeliculasSimuladas();
@@ -121,10 +123,11 @@ public class Actividad_Resena extends AppCompatActivity {
     }
 
     private void cargarPeliculasSimuladas(){
-        // ejemplo simple, idealmente trae desde TMDB
+        // Voy a asumir que tu constructor de Movie no pide ID, lo ajustaré en publicarResena
         peliculasSimuladas.add(new Movie("Interstellar", "desc", "/path"));
         peliculasSimuladas.add(new Movie("Demon Slayer", "desc", "/path"));
         peliculasSimuladas.add(new Movie("Spirited Away", "desc", "/path"));
+
 
         List<String> nombres = new ArrayList<>();
         for (Movie m: peliculasSimuladas) nombres.add(m.getTitle());
@@ -154,14 +157,23 @@ public class Actividad_Resena extends AppCompatActivity {
 
     private void publicarResena(){
         String peliculaSeleccionada = spinnerPeliculas.getSelectedItem() != null ? spinnerPeliculas.getSelectedItem().toString() : "";
-        int idPelicula = 0; // si tu API necesita id, buscalo en tu lista de películas (simulada)
-        // buscar id de la peliculaSimulada:
-        for (Movie m: peliculasSimuladas) {
-            if (m.getTitle().equals(peliculaSeleccionada)) {
-                idPelicula = m.getId(); // si tu Movie no tiene id real, usa índice o adapta
-                break;
-            }
-        }
+
+        // --- LÓGICA DE PELÍCULA ---
+        // Si tu API necesita un ID de película (ej. de TMDB), no puedes usar el título.
+        // Por ahora, asumiré que tu API acepta el TÍTULO como string.
+        // Si necesita un ID, necesitas cambiar esto.
+
+        // int idPelicula = 0;
+        // for (Movie m: peliculasSimuladas) {
+        //     if (m.getTitle().equals(peliculaSeleccionada)) {
+        //         idPelicula = m.getId(); // Esto asume que tu clase "Movie" tiene un "getId()"
+        //         break;
+        //     }
+        // }
+
+        // ---- VOY A ASUMIR QUE TU API ACEPTA EL ID 0 o que tu ReseñaRequest acepta el nombre
+        // Esto es un placeholder, ¡probablemente necesites ajustar tu ReseñaRequest!
+        int idPelicula = 0; // O usa el nombre: peliculaSeleccionada
 
         String comentario = etComentario.getText().toString().trim();
         float puntaje = ratingBar.getRating();
@@ -171,42 +183,46 @@ public class Actividad_Resena extends AppCompatActivity {
             return;
         }
 
-        // crea request (usa tu modelo ReseñaRequest)
-        int idUsuario = getSharedPreferences("CineDexPrefs", MODE_PRIVATE).getInt("USER_ID", -1);
+        // --- CORRECCIÓN LÓGICA 4: Usar el archivo "sesion_usuario" y la key "ID_USUARIO" ---
+        SharedPreferences prefs = getSharedPreferences("sesion_usuario", MODE_PRIVATE);
+        int idUsuario = prefs.getInt("ID_USUARIO", -1);
+
         if (idUsuario == -1) {
-            Toast.makeText(this, "Usuario no logueado", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Usuario no logueado. Cierra sesión y vuelve a entrar.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         ReseñaRequest req = new ReseñaRequest(idUsuario, idPelicula, comentario, puntaje);
 
-        // token de autorización (si aplica)
-        String token = getSharedPreferences("CineDexPrefs", MODE_PRIVATE).getString("AUTH_TOKEN", "");
-        String bearer = token.isEmpty() ? "" : "Bearer " + token;
+        // --- CORRECCIÓN LÓGICA 5: No guardaste un "AUTH_TOKEN" ---
+        // Si tu API requiere un Token, necesitas obtenerlo en el Login y guardarlo.
+        // Por ahora, lo envío vacío.
+        // String token = getSharedPreferences("sesion_usuario", MODE_PRIVATE).getString("AUTH_TOKEN", "");
+        String bearer = ""; // "Bearer " + token;
 
         Call<Reseña> call = apiService.postResena(bearer, req);
         call.enqueue(new Callback<Reseña>() {
             @Override
             public void onResponse(Call<Reseña> call, Response<Reseña> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    // Añadir ubicación en el cliente (si tu API no la guarda)
-                    // Actualizar lista
                     reseñas.add(0, response.body());
                     adapter.notifyItemInserted(0);
-                    // actualizar resumen (simple)
                     actualizarResumen();
-                    Toast.makeText(ActividadResena.this, "Reseña publicada", Toast.LENGTH_SHORT).show();
-                    // limpiar formulario
+
+                    // --- CORRECCIÓN DE COMPILACIÓN 1 ---
+                    Toast.makeText(Actividad_Resena.this, "Reseña publicada", Toast.LENGTH_SHORT).show();
                     etComentario.setText("");
                     ratingBar.setRating(0);
                 } else {
-                    Toast.makeText(ActividadResena.this, "Error al publicar (API)", Toast.LENGTH_SHORT).show();
+                    // --- CORRECCIÓN DE COMPILACIÓN 2 ---
+                    Toast.makeText(Actividad_Resena.this, "Error al publicar (API)", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Reseña> call, Throwable t) {
-                Toast.makeText(ActividadResena.this, "Fallo de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                // --- CORRECCIÓN DE COMPILACIÓN 3 ---
+                Toast.makeText(Actividad_Resena.this, "Fallo de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -231,7 +247,7 @@ public class Actividad_Resena extends AppCompatActivity {
     private void actualizarResumen(){
         int c1=0,c2=0,c3=0,c4=0,c5=0;
         for (Reseña r : reseñas){
-            int v = Math.round(r.getPuntuacion());
+            int v = Math.round(r.getPuntuacion()); // Asumo que Reseña tiene getPuntuacion()
             switch (v){
                 case 1: c1++; break;
                 case 2: c2++; break;

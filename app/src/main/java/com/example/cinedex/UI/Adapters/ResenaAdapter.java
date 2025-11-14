@@ -1,9 +1,10 @@
+// Archivo: UI/Adapters/ResenaAdapter.java
 package com.example.cinedex.UI.Adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RatingBar;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,7 @@ public class ResenaAdapter extends RecyclerView.Adapter<ResenaAdapter.ViewHolder
     @NonNull
     @Override
     public ResenaAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Obtenemos el contexto del padre (el RecyclerView)
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_resena, parent, false);
         return new ViewHolder(v);
     }
@@ -34,36 +36,57 @@ public class ResenaAdapter extends RecyclerView.Adapter<ResenaAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ResenaAdapter.ViewHolder holder, int position) {
         Reseña r = lista.get(position);
-        holder.tvUser.setText(r.getUsuario() != null ? r.getUsuario().getNombreUsuario() : "Anon");
-        holder.tvComment.setText(r.getReseñaTexto());
-        holder.ratingBar.setRating(r.getPuntuacion());
+
+        // --- CÓDIGO ACTUALIZADO PARA TU XML ---
+
+        // 1. Poner nombre de usuario
+        holder.itemNombre.setText(r.getUsuario() != null ? r.getUsuario().getNombreUsuario() : "Anónimo");
+
+        // 2. Crear el texto de "meta" (ej. "Interstellar · 4.5 ★")
+        // Asumo que tu modelo Reseña tiene getPelicula() y getPuntuacion()
+        String tituloPelicula = (r.getPelicula() != null ? r.getPelicula().getTitle() : "Película");
+        String meta = String.format(Locale.getDefault(), "%s · %.1f ★",
+                tituloPelicula,
+                r.getPuntuacion());
+        holder.itemMeta.setText(meta);
+
+        // 3. Poner comentario
+        holder.itemComentario.setText(r.getReseñaTexto());
+
+        // 4. Poner fecha (o ubicación)
         if (r.getFechaColeccion() != null) {
             SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            holder.tvDate.setText(df.format(r.getFechaColeccion()));
-        } else holder.tvDate.setText("");
+            holder.itemUbicacion.setText("Fecha: " + df.format(r.getFechaColeccion()));
+        } else {
+            holder.itemUbicacion.setText("Fecha: N/A");
+        }
     }
 
     @Override
     public int getItemCount() {
-        return lista.size();
+        // Comprobación para evitar NullPointerException si la lista no se ha cargado
+        return (lista != null) ? lista.size() : 0;
     }
 
+    // --- VIEWHOLDER ACTUALIZADO ---
+    // Coincide con los IDs de tu item_resena.xml
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        TextView tvUser, tvComment, tvDate;
-        RatingBar ratingBar;
+        ImageView itemAvatar;
+        TextView itemNombre, itemMeta, itemComentario, itemUbicacion;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvUser = itemView.findViewById(R.id.itemResenaUser);
-            tvComment = itemView.findViewById(R.id.itemResenaComment);
-            tvDate = itemView.findViewById(R.id.itemResenaDate);
-            ratingBar = itemView.findViewById(R.id.itemResenaRating);
+            itemAvatar = itemView.findViewById(R.id.item_avatar);
+            itemNombre = itemView.findViewById(R.id.item_nombre);
+            itemMeta = itemView.findViewById(R.id.item_meta);
+            itemComentario = itemView.findViewById(R.id.item_comentario);
+            itemUbicacion = itemView.findViewById(R.id.item_ubicacion);
         }
     }
 
-    // Para actualizar datos desde la Activity
+    // Para actualizar datos desde la Activity (o Fragment)
     public void updateData(List<Reseña> nuevas) {
         this.lista = nuevas;
         notifyDataSetChanged();
     }
 }
-

@@ -2,21 +2,20 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"  android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_dark">
-
-    <com.google.android.material.appbar.AppBarLayout
+    android:background="@color/gray_dark"
+    tools:context=".UI.Activities.Actividad_Resena"> <com.google.android.material.appbar.AppBarLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_resena"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_resena"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/gray_medium"
-            app:title="Escribir Reseña"
-            app:titleTextColor="@color/white" />
-    </com.google.android.material.appbar.AppBarLayout>
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/gray_medium"
+        app:title="Escribir Reseña"
+        app:titleTextColor="@color/white" />
+</com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -29,7 +28,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Info usuario (nombre + correo) -->
             <LinearLayout
                 android:id="@+id/layoutUsuario"
                 android:layout_width="match_parent"
@@ -46,7 +44,7 @@
                     android:src="@drawable/ic_person"
                     android:scaleType="centerCrop"
                     android:contentDescription="avatar"
-                    android:background="@drawable/cicle_gradient" />
+                    android:background="@drawable/circle_gradient" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -74,7 +72,6 @@
 
             </LinearLayout>
 
-            <!-- Formulario de reseña -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -83,7 +80,6 @@
                 android:padding="12dp"
                 android:background="@drawable/card_transparent_dark">
 
-                <!-- Spinner / selector de película -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -98,7 +94,6 @@
                     android:layout_marginTop="6dp"
                     android:background="@drawable/edittext_rounded_border"/>
 
-                <!-- Género / Año (opcional lectura) -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -125,7 +120,6 @@
                         android:textColor="@color/white"/>
                 </LinearLayout>
 
-                <!-- Rating -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -143,7 +137,6 @@
                     style="?android:attr/ratingBarStyleSmall"
                     android:layout_marginTop="6dp"/>
 
-                <!-- Comentario -->
                 <EditText
                     android:id="@+id/etComentario"
                     android:layout_width="match_parent"
@@ -155,7 +148,6 @@
                     android:background="@drawable/edittext_background"
                     android:textColor="@color/white"/>
 
-                <!-- Mostrar ubicación (obtenida) -->
                 <TextView
                     android:id="@+id/tvUbicacion"
                     android:layout_width="match_parent"
@@ -165,7 +157,6 @@
                     android:layout_marginTop="8dp"
                     android:textSize="12sp"/>
 
-                <!-- Botones -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -193,7 +184,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Estadísticas resumen: cuantas reseñas por estrellas -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -201,7 +191,6 @@
                 android:layout_marginTop="12dp"
                 android:weightSum="5">
 
-                <!-- Para simplificar sólo texto -->
                 <TextView
                     android:id="@+id/tvResumenEstrellas"
                     android:layout_width="match_parent"
@@ -210,14 +199,12 @@
                     android:textColor="@color/text_gray"/>
             </LinearLayout>
 
-            <!-- Lista de reseñas -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvResenas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:clipToPadding="false"
-                tools:listitem="@layout/item_resena"/>
-        </LinearLayout>
+                tools:listitem="@layout/item_resena"/> </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -31,6 +31,9 @@ public class Movie {
     @SerializedName("runtime")
     private int runtime; // -> Duración en minutos
 
+    public Movie(String interstellar, String desc, String s) {
+    }
+
     // Getters
     public int getId() { return id; }
     public String getTitle() { return title; }

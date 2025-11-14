@@ -3,8 +3,8 @@ package com.example.cinedex.UI.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.RenderEffect;
-import android.graphics.Shader;
+import android.graphics.RenderEffect; // <- Nota: Esta importación solo funciona en API 31+
+import android.graphics.Shader;      // <- Nota: Esta importación solo funciona en API 31+
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -84,9 +84,10 @@ public class Actividad_Login extends AppCompatActivity {
                     //Si el login es exitoso
                     UsuarioPublicoDto usuarioLogueado = response.body();
 
+                    // --- CORRECCIÓN 1: Renombrar la variable ---
                     //Guardar la sesión del usuario
-                    SharedPreferences prefs = getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs.edit();
+                    SharedPreferences prefsSesion = getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefsSesion.edit();
 
                     //Guardamos los datos clase del usuario
                     editor.putInt("ID_USUARIO", usuarioLogueado.getIdUsuario());
@@ -95,30 +96,38 @@ public class Actividad_Login extends AppCompatActivity {
                     editor.putString("APELLIDOS", usuarioLogueado.getApellidos());
                     editor.putString("NOMBRE_RANGO", usuarioLogueado.getNombreRango());
                     editor.putBoolean("ESTA_LOGUEADO", true);
-
-                    //Guardamos los cambios
                     editor.apply();
 
                     //Enviamos al usuario a la actividad principal
                     Toast.makeText(Actividad_Login.this, "Bienvenido, " + usuarioLogueado.getNombreUsuario() + "!", Toast.LENGTH_SHORT).show();
-                    SharedPreferences prefs = getSharedPreferences("CineDexPrefs", MODE_PRIVATE);
-                    boolean acepto = prefs.getBoolean("TERMINOS_ACEPTADOS", false);
+
+                    // --- CORRECCIÓN 1 (Continuación): Usar un nombre diferente ---
+                    SharedPreferences prefsTerminos = getSharedPreferences("CineDexPrefs", MODE_PRIVATE);
+                    boolean acepto = prefsTerminos.getBoolean("TERMINOS_ACEPTADOS", false);
+
+                    // --- CORRECCIÓN 2: Lógica de redirección arreglada ---
+                    Intent intent;
+
                     if (!acepto) {
-                        Intent t = new Intent(Actividad_Login.this, ActividadTerminos.class);
-                        startActivity(t);
-                        // no finish() aún: tras aceptar se vuelve al login o puedes redirigir desde Terminos
-                    } else {
-                        // continuar normal
-                        Intent intent = new Intent(Actividad_Login.this, Actividad_Principal.class);
+                        // Si no ha aceptado, lo mandamos a Términos
+                        intent = new Intent(Actividad_Login.this, Actividad_Terminos.class);
                         startActivity(intent);
-                        finish();
+                        // No cerramos Login, para que pueda volver
+                    } else {
+                        // Si ya aceptó, lo mandamos a la Principal
+                        intent = new Intent(Actividad_Login.this, Actividad_Principal.class);
+
+                        // (Buena Práctica): Limpiamos la pila de actividades
+                        // para que no pueda presionar "Atrás" y volver al Login
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        finish(); // Cerramos el Login
                     }
 
-                    Intent intent = new Intent(Actividad_Login.this, Actividad_Principal.class);
-                    startActivity(intent);
+                    // --- CORRECCIÓN 2 (Continuación): Se eliminó el bloque de código duplicado que estaba aquí ---
 
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    finish();
                 } else {
                     Log.e("[FALLO LOGIN]", "Código: " + response.code());
                     Toast.makeText(Actividad_Login.this, "Usuario o contraseña incorrecta", Toast.LENGTH_SHORT).show();
@@ -127,11 +136,9 @@ public class Actividad_Login extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<UsuarioPublicoDto> call, Throwable t) {
-
                 //Error de red
                 Log.e("[LOGIN FALLO]", "Error de conexión: " + t.getMessage());
                 Toast.makeText(Actividad_Login.this, "Error de conexión con el servidor", Toast.LENGTH_SHORT).show();
-
             }
         });
     }

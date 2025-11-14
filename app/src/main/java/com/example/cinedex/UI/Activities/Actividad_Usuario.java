@@ -124,15 +124,15 @@ public class Actividad_Usuario extends AppCompatActivity {
                             ed.apply();
 
                             tvNombreCompleto.setText(newNombres + " " + newApellidos);
-                            Toast.makeText(Actividad_Perfil.this, "Datos actualizados en el servidor", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Actividad_Usuario.this, "Datos actualizados en el servidor", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(Actividad_Perfil.this, "Error al actualizar en servidor (revise log)", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Actividad_Usuario.this, "Error al actualizar en servidor (revise log)", Toast.LENGTH_LONG).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(Actividad_Perfil.this, "Error de conexión al actualizar", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Actividad_Usuario.this, "Error de conexión al actualizar", Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {

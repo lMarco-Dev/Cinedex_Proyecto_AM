@@ -1,80 +1,102 @@
-package com.example.cinedex.UI.Adapters;
+// Archivo: UI/Fragments/ResenaFragment.java
+package com.example.cinedex.UI.Fragments;
 
-import android.content.Context;
+import android.os.Bundle;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import com.example.cinedex.Data.Models.Reseña;
+import com.example.cinedex.Data.Network.CineDexApiClient;
+import com.example.cinedex.Data.Network.CineDexApiService;
 import com.example.cinedex.R;
-import java.text.SimpleDateFormat;
+import com.example.cinedex.UI.Adapters.ResenaAdapter;
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-public class ResenaAdapter extends RecyclerView.Adapter<ResenaAdapter.ViewHolder> {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-    private List<Reseña> lista;
-    private Context ctx;
+//
+// ESTE ES EL FRAGMENTO LIMPIO
+// ¡YA NO TIENE LA CLASE ResenaAdapter DUPLICADA DENTRO!
+//
+public class ResenaFragment extends Fragment {
 
-    public ResenaAdapter(List<Reseña> lista, Context ctx) {
-        this.lista = lista;
-        this.ctx = ctx;
-    }
+    private RecyclerView rvResenas;
+    private ResenaAdapter adapter;
+    private List<Reseña> listaDeResenas;
+    private CineDexApiService apiService;
 
-    @NonNull
-    @Override
-    public ResenaAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(ctx).inflate(R.layout.item_resena, parent, false);
-        return new ViewHolder(v);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull ResenaAdapter.ViewHolder holder, int position) {
-        Reseña r = lista.get(position);
-
-        holder.itemNombre.setText(r.getUsuario() != null ? r.getUsuario().getNombreUsuario() : "Anónimo");
-        String meta = (r.getPelicula() != null ? r.getPelicula().getTitle() : "Película") +
-                " · " + r.getPuntuacion() + " ★";
-        holder.itemMeta.setText(meta);
-
-        holder.itemComentario.setText(r.getReseñaTexto() != null ? r.getReseñaTexto() : "");
-        if (r.getFechaColeccion() != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-            // holder.itemFecha.setText(sdf.format(r.getFechaColeccion()));
-        }
-
-        // ubicación (puede ser null)
-        if (r.getUsuario() != null) {
-            // no hacemos nada con avatar por ahora
-        }
-        holder.itemUbicacion.setText(r.getFechaColeccion() != null ? "Fecha: " + r.getFechaColeccion().toString() : "");
-        // si tienes campo de ubicacion en tu modelo, muéstralo
+    public ResenaFragment() {
+        // Constructor público vacío requerido
     }
 
     @Override
-    public int getItemCount() {
-        return lista.size();
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        listaDeResenas = new ArrayList<>();
+        apiService = CineDexApiClient.getApiService();
+        // Inicializamos el adaptador con la lista vacía
+        adapter = new ResenaAdapter(listaDeResenas);
     }
 
-    public void setData(List<Reseña> data) {
-        this.lista = data;
-        notifyDataSetChanged();
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflar el layout simple del fragmento (el que creaste en el Paso 2)
+        return inflater.inflate(R.layout.ly_fragment_resena, container, false);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView itemAvatar;
-        TextView itemNombre, itemMeta, itemComentario, itemUbicacion;
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            itemAvatar = itemView.findViewById(R.id.item_avatar);
-            itemNombre = itemView.findViewById(R.id.item_nombre);
-            itemMeta = itemView.findViewById(R.id.item_meta);
-            itemComentario = itemView.findViewById(R.id.item_comentario);
-            itemUbicacion = itemView.findViewById(R.id.item_ubicacion);
-        }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Encontrar el RecyclerView en el layout del fragmento
+        rvResenas = view.findViewById(R.id.rv_resenas_fragment); // ID del Paso 2
+        rvResenas.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvResenas.setAdapter(adapter);
+
+        // Cargar los datos
+        cargarResenasDesdeApi();
+    }
+
+    private void cargarResenasDesdeApi(){
+        apiService.getResenas().enqueue(new Callback<List<Reseña>>() {
+            @Override
+            public void onResponse(Call<List<Reseña>> call, Response<List<Reseña>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Actualizar la lista en el adaptador
+                    listaDeResenas.clear();
+                    listaDeResenas.addAll(response.body());
+                    adapter.notifyDataSetChanged(); // Notificar al adaptador que los datos cambiaron
+                } else {
+                    Toast.makeText(getContext(), "Error al cargar reseñas", Toast.LENGTH_SHORT).show();
+                    Log.e("ResenaFragment", "Error API: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Reseña>> call, Throwable t) {
+                Toast.makeText(getContext(), "Fallo de conexión", Toast.LENGTH_SHORT).show();
+                Log.e("ResenaFragment", "Fallo de red: " + t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        cargarResenasDesdeApi();
     }
 }
