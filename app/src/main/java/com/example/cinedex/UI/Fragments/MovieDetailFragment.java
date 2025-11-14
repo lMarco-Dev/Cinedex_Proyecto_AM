@@ -179,21 +179,30 @@ public class MovieDetailFragment extends Fragment implements ResenaDialogFragmen
         int idUsuario = getUsuarioIdLogueado();
 
         // VALIDACIÓN 1: ¿Se cargó la película?
-        if (this.peliculaActual == null) {
+        if (this.peliculaActual == null || idUsuario == -1) {
             Toast.makeText(getContext(), "Error: Datos de la película no cargados.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // VALIDACIÓN 2: ¿Está el usuario logueado?
-        if (idUsuario == -1) {
-            Toast.makeText(getContext(), "Error: No se encontró sesión de usuario.", Toast.LENGTH_LONG).show();
-            return;
+        // Validación de puntaje
+        if (puntaje < 0.5f) puntaje = 0.5f;
+        if (puntaje > 5.0f) puntaje = 5.0f;
+
+        // Truncar campos para cumplir backend
+        String tituloPelicula = this.peliculaActual.getTitle();
+        if (tituloPelicula.length() > 200) {
+            tituloPelicula = tituloPelicula.substring(0, 200);
         }
 
-        // VALIDACIÓN 3: ¿El puntaje es válido?
-        if (puntaje < 0.5f) {
-            Toast.makeText(getContext(), "Error: El puntaje no puede ser 0.", Toast.LENGTH_LONG).show();
-            return;
+        String posterUrl = this.peliculaActual.getPosterPath() != null ?
+                this.peliculaActual.getPosterPath() : "";
+        if (posterUrl.length() > 500) {
+            posterUrl = posterUrl.substring(0, 500);
+        }
+
+        String texto = comentario != null ? comentario : "";
+        if (texto.length() > 1000) {  // opcional: limitar comentarios demasiado largos
+            texto = texto.substring(0, 1000);
         }
 
         // Construimos el DTO para la API
@@ -214,34 +223,46 @@ public class MovieDetailFragment extends Fragment implements ResenaDialogFragmen
     private void enviarResena(ResenaRequestDto request) {
         Toast.makeText(getContext(), "Guardando reseña...", Toast.LENGTH_SHORT).show();
 
-        // Llamada Retrofit usando el tipo correcto: MensajeRespuestaDto
         Call<MensajeRespuestaDto> call = cineDexApiService.postResena(request);
 
         call.enqueue(new Callback<MensajeRespuestaDto>() {
             @Override
             public void onResponse(Call<MensajeRespuestaDto> call, Response<MensajeRespuestaDto> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(getContext(), response.body().getMensaje(), Toast.LENGTH_LONG).show();
+                if (getContext() == null) return;
 
-                    // Limpiar campos
-                    // (Si estás en fragment con un diálogo, podrías cerrar diálogo aquí)
+                String mensaje;
+
+                if (response.isSuccessful() && response.body() != null) {
+                    mensaje = response.body().getMensaje();
+                    if (mensaje == null || mensaje.isEmpty()) {
+                        mensaje = "Reseña guardada correctamente.";
+                    }
                 } else {
                     String errorBody = "N/A";
                     try {
-                        if (response.errorBody() != null) errorBody = response.errorBody().string();
-                    } catch (Exception e) {}
+                        if (response.errorBody() != null) {
+                            errorBody = response.errorBody().string();
+                        }
+                    } catch (Exception e) {
+                        Log.e("API_POST_RESEÑA", "Error leyendo errorBody", e);
+                    }
                     Log.e("API_POST_RESEÑA", "Error API: " + response.code() + " - " + errorBody);
-                    Toast.makeText(getContext(), "Error API: " + response.code(), Toast.LENGTH_LONG).show();
+                    mensaje = "Error al guardar reseña. Código: " + response.code();
                 }
+
+                Toast.makeText(getContext(), mensaje, Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onFailure(Call<MensajeRespuestaDto> call, Throwable t) {
-                Log.e("API_POST_RESEÑA", "Fallo de conexión: " + t.getMessage());
-                Toast.makeText(getContext(), "Error de conexión", Toast.LENGTH_LONG).show();
+                if (getContext() != null) {
+                    Log.e("API_POST_RESEÑA", "Fallo de conexión: " + t.getMessage(), t);
+                    Toast.makeText(getContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
+
 
     // --- Método para obtener el usuario logueado ---
     private int getUsuarioIdLogueado() {
