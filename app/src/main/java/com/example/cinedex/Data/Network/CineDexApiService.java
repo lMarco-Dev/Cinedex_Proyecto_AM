@@ -3,13 +3,13 @@ package com.example.cinedex.Data.Network;
 import java.util.List;
 
 import com.example.cinedex.Data.Models.DTOs.MensajeRespuestaDto;
+import com.example.cinedex.Data.Models.DTOs.ResenaPublicaDto;
 import com.example.cinedex.Data.Models.DTOs.ResenaRequestDto;
 import com.example.cinedex.Data.Models.DTOs.ResenaEditarDto;
 import com.example.cinedex.Data.Models.DTOs.UsuarioActualizarDto;
 import com.example.cinedex.Data.Models.DTOs.UsuarioLoginDto;
 import com.example.cinedex.Data.Models.DTOs.UsuarioPublicoDto;
 import com.example.cinedex.Data.Models.DTOs.UsuarioRegistroDto;
-import com.example.cinedex.Data.Models.Resena;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -43,19 +43,20 @@ public interface CineDexApiService {
     @POST("api/Usuarios/login")
     Call<UsuarioPublicoDto> loginUsuario(@Body UsuarioLoginDto loginDto);
 
-    // --- RESEÑAS / RESENAS ---
+    // --- Reseñas ---
     @GET("api/Resenas")
-    Call<List<Resena>> getResenas();
+    Call<List<ResenaPublicaDto>> getResenas();
 
     @GET("api/Resenas/{id}")
-    Call<Resena> getResena(@Path("id") int idResena);
+    Call<ResenaPublicaDto> getResena(@Path("id") int idResena);
 
     @GET("api/Resenas/usuario/{idUsuario}")
-    Call<List<Resena>> getResenasPorUsuario(@Path("idUsuario") int idUsuario);
+    Call<List<ResenaPublicaDto>> getResenasPorUsuario(@Path("idUsuario") int idUsuario);
 
     @GET("api/Resenas/pelicula/{idPelicula}")
-    Call<List<Resena>> getResenasPorPelicula(@Path("idPelicula") int idPelicula);
+    Call<List<ResenaPublicaDto>> getResenasPorPelicula(@Path("idPelicula") int idPelicula);
 
+    // El backend devuelve un mensaje (MensajeRespuestaDto) al crear la reseña
     @POST("api/Resenas")
     Call<MensajeRespuestaDto> postResena(@Body ResenaRequestDto request);
 

@@ -1,69 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"  android:layout_width="match_parent"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="3dp"
-    android:background="@color/gray_medium">
+    android:layout_margin="10dp"
+    card_view:cardCornerRadius="16dp"
+    card_view:cardElevation="6dp"
+    card_view:cardBackgroundColor="#1A1A1A"
+    android:padding="12dp"
+    card_view:cardUseCompatPadding="true">
 
     <LinearLayout
-        android:padding="12dp"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <ImageView
+            android:id="@+id/imgPoster"
+            android:layout_width="95dp"
+            android:layout_height="140dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/bg_poster_placeholder"
+            android:layout_marginEnd="14dp"
+            android:contentDescription="Poster" />
+
         <LinearLayout
-            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_weight="1">
 
-            <ImageView
-                android:id="@+id/item_avatar"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:src="@drawable/ic_person"
-                android:scaleType="centerCrop"/>
-
-            <LinearLayout
-                android:layout_marginStart="8dp"
-                android:orientation="vertical"
+            <TextView
+                android:id="@+id/txtPelicula"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"/>
 
-                <TextView
-                    android:id="@+id/item_nombre"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Usuario Ejemplo"/>
+            <RatingBar
+                android:id="@+id/ratingBarItem"
 
-                <TextView
-                    android:id="@+id/item_meta"
-                    android:textColor="@color/text_gray"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Película · 5 ★  · 2024"/>
-            </LinearLayout>
+                style="?android:attr/ratingBarStyleSmall"
+
+                android:isIndicator="true"
+                android:numStars="5"
+                android:stepSize="1"
+                android:layout_marginTop="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/txtComentario"
+                android:textSize="14sp"
+                android:textColor="#DDDDDD"
+                android:layout_marginTop="8dp"
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="#333333" />
+
+            <TextView
+                android:id="@+id/txtFecha"
+                android:textSize="12sp"
+                android:textColor="#AAAAAA"
+                android:layout_marginTop="6dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/item_comentario"
-            android:layout_marginTop="8dp"
-            android:textColor="@color/white"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Buenísima peli, me encantó..." />
-
-        <TextView
-            android:id="@+id/item_ubicacion"
-            android:layout_marginTop="8dp"
-            android:textColor="@color/text_gray"
-            android:textSize="12sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Ubicación: -12.345, -77.123" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

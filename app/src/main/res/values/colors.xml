@@ -29,4 +29,6 @@
     <color name="gradient_end">#1C1C1C</color>
 
     <color name="darker_gray">#8A8A8A</color>
+
+    <color name="red_danger">#E53935</color>
 </resources>
