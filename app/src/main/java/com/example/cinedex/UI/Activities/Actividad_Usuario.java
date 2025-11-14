@@ -24,7 +24,7 @@ import com.example.cinedex.UI.Adapters.ResenaAdapter; // <-- ¡Importamos el ada
 
 import com.example.cinedex.Data.Access.DAOResena;
 import com.example.cinedex.Data.Access.DAOUsuario;
-import com.example.cinedex.Data.Models.Reseña;
+import com.example.cinedex.Data.Models.Resena;
 import com.example.cinedex.Data.Models.DTOs.UsuarioActualizarDto;
 import com.example.cinedex.Data.Network.CineDexApiClient;
 import com.example.cinedex.Data.Network.CineDexApiService;
@@ -117,31 +117,28 @@ public class Actividad_Usuario extends AppCompatActivity {
                 CineDexApiService api = CineDexApiClient.getApiService();
                 String bearer = "Bearer " + authToken;
                 UsuarioActualizarDto dto = new UsuarioActualizarDto(newNombres, newApellidos);
-                api.actualizarUsuario(bearer, usuarioId, dto).enqueue(new Callback<Void>() {
+                api.actualizarUsuario(usuarioId, dto).enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         if (response.isSuccessful()) {
-                            SharedPreferences.Editor ed = getSharedPreferences("sesion_usuario", MODE_PRIVATE).edit();
-                            ed.putString("NOMBRES", newNombres);
-                            ed.putString("APELLIDOS", newApellidos);
-                            ed.apply();
-                            tvNombreCompleto.setText(newNombres + " " + newApellidos);
-                            Toast.makeText(Actividad_Usuario.this, "Datos actualizados en el servidor", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Actividad_Usuario.this, "Usuario actualizado", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(Actividad_Usuario.this, "Error al actualizar en servidor (revise log)", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Actividad_Usuario.this, "Error API: " + response.code(), Toast.LENGTH_LONG).show();
                         }
                     }
+
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(Actividad_Usuario.this, "Error de conexión al actualizar", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Actividad_Usuario.this, "Fallo de conexión", Toast.LENGTH_SHORT).show();
                     }
                 });
+
             } else {
                 com.example.cinedex.Data.Models.Usuario u = new com.example.cinedex.Data.Models.Usuario();
                 u.setNombreUsuario(etCorreoEdit.getText().toString().trim());
                 u.setNombres(newNombres);
                 u.setApellidos(newApellidos);
-                u.setContraseña("");
+                u.setContrasena("");
                 boolean ok = daoUsuario.Actualizar(u, usuarioId);
                 if (ok) {
                     SharedPreferences.Editor ed = getSharedPreferences("sesion_usuario", MODE_PRIVATE).edit();
@@ -170,7 +167,7 @@ public class Actividad_Usuario extends AppCompatActivity {
 
             com.example.cinedex.Data.Models.Usuario u = new com.example.cinedex.Data.Models.Usuario();
             u.setNombreUsuario(etCorreoEdit.getText().toString().trim());
-            u.setContraseña(pass);
+            u.setContrasena(pass);
             u.setNombres(etNombres.getText().toString().trim());
             u.setApellidos(etApellidos.getText().toString().trim());
             boolean ok = daoUsuario.Actualizar(u, usuarioId);
@@ -217,7 +214,7 @@ public class Actividad_Usuario extends AppCompatActivity {
     private void actualizarListaResenas() {
 
         // 1. Obtener la lista de reseñas del DAO (esto ya lo tenías)
-        List<Reseña> lista = daoResena.ListarPorUsuario(usuarioId);
+        List<Resena> lista = daoResena.ListarPorUsuario(usuarioId);
 
         // 2. Configurar el Adaptador que ya creamos
         resenaAdapter = new ResenaAdapter(lista);

@@ -69,7 +69,7 @@ public class DAOUsuario {
                 u.setIdUsuario(registros.getInt(idIndex));
                 u.setNombreUsuario(registros.getString(nombreUsuario));
                 u.setEmail(registros.getString(email));
-                u.setContraseña(registros.getString(contraseña));
+                u.setContrasena(registros.getString(contraseña));
                 u.setNombres(registros.getString(nombres));
                 u.setApellidos(registros.getString(apellidos));
                 u.setIdRangoActual(registros.getInt(rango));
@@ -99,7 +99,7 @@ public class DAOUsuario {
 
         valores.put(BDHelper.COL_NOMBRE_USUARIO, u.getNombreUsuario());
         valores.put(BDHelper.COL_EMAIL, u.getEmail());
-        valores.put(BDHelper.COL_CONTRASENA, u.getContraseña());
+        valores.put(BDHelper.COL_CONTRASENA, u.getContrasena());
         valores.put(BDHelper.COL_NOMBRES, u.getNombres());
         valores.put(BDHelper.COL_APELLIDOS, u.getApellidos());
         valores.put(BDHelper.COL_RANGO_ACTUAL, u.getIdRangoActual());

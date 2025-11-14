@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.cinedex.Data.Models.Reseña;
+import com.example.cinedex.Data.Models.Resena;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,13 +45,13 @@ public class DAOResena {
         return fila > 0;
     }
 
-    public List<Reseña> ListarPorPelicula(int idPelicula){
-        List<Reseña> lista = new ArrayList<>();
+    public List<Resena> ListarPorPelicula(int idPelicula){
+        List<Resena> lista = new ArrayList<>();
         SQLiteDatabase db = helper.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM ResenaLocal WHERE IdPelicula = ? ORDER BY FechaRegistro DESC", new String[]{String.valueOf(idPelicula)});
         if(c.moveToFirst()){
             do{
-                Reseña r = new Reseña();
+                Resena r = new Resena();
                 r.setIdReseña(c.getInt(c.getColumnIndexOrThrow("IdResena")));
                 r.setIdUsuario(c.getInt(c.getColumnIndexOrThrow("IdUsuario")));
                 r.setIdPelicula(c.getInt(c.getColumnIndexOrThrow("IdPelicula")));
@@ -66,13 +66,13 @@ public class DAOResena {
         return lista;
     }
 
-    public List<Reseña> ListarPorUsuario(int idUsuario){
-        List<Reseña> lista = new ArrayList<>();
+    public List<Resena> ListarPorUsuario(int idUsuario){
+        List<Resena> lista = new ArrayList<>();
         SQLiteDatabase db = helper.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM ResenaLocal WHERE IdUsuario = ? ORDER BY FechaRegistro DESC", new String[]{String.valueOf(idUsuario)});
         if(c.moveToFirst()){
             do{
-                Reseña r = new Reseña();
+                Resena r = new Resena();
                 r.setIdReseña(c.getInt(c.getColumnIndexOrThrow("IdResena")));
                 r.setIdUsuario(c.getInt(c.getColumnIndexOrThrow("IdUsuario")));
                 r.setIdPelicula(c.getInt(c.getColumnIndexOrThrow("IdPelicula")));

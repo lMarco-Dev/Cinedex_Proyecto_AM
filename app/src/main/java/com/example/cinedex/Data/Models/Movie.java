@@ -3,36 +3,36 @@ package com.example.cinedex.Data.Models;
 import com.google.gson.annotations.SerializedName;
 
 public class Movie {
-    // Usa @SerializedName para mapear el nombre del JSON a tu variable
+
     @SerializedName("id")
-    private int id; // -> Id
+    private int id;
+
     @SerializedName("title")
-    private String title; // -> Titulo
+    private String title;
 
     @SerializedName("poster_path")
-    private String posterPath; // -> Imagen
+    private String posterPath;
 
     @SerializedName("vote_count")
-    private int voteCount; // -> Conteo de Votos
+    private int voteCount;
 
     @SerializedName("overview")
-    private String overview; // -> Descripción
+    private String overview;
 
     @SerializedName("backdrop_path")
-    private String backdropPath; // -> Imagen de fondo
+    private String backdropPath;
 
-    // --- ¡CAMPOS AÑADIDOS! ---
     @SerializedName("vote_average")
-    private double voteAverage; // -> Calificación
+    private double voteAverage;
 
     @SerializedName("release_date")
-    private String releaseDate; // -> Fecha de estreno
+    private String releaseDate;
 
     @SerializedName("runtime")
-    private int runtime; // -> Duración en minutos
+    private int runtime;
 
-    public Movie(String interstellar, String desc, String s) {
-    }
+    // Constructor vacío necesario para Gson
+    public Movie() {}
 
     // Getters
     public int getId() { return id; }

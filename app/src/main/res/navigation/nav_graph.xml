@@ -31,7 +31,7 @@
 
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.example.cinedex.UI.Fragments.SearchFragment"
+        android:name="com.example.cinedex.UI.Fragments.EventosFragment"
         android:label="Buscar"
         tools:layout="@layout/ly_fragment_search" />
     <fragment

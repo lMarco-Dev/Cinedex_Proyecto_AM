@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
-public class Reseña {
+public class Resena {
     @SerializedName("id_reseña")
     private int idReseña;
 
@@ -32,7 +32,7 @@ public class Reseña {
     private Movie pelicula;
 
     // Constructor vacio
-    public Reseña() {}
+    public Resena() {}
 
     // (Getters)
     public int getIdReseña() { return idReseña; }

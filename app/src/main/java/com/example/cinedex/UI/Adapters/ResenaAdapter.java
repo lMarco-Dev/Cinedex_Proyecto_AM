@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.cinedex.Data.Models.Reseña;
+import com.example.cinedex.Data.Models.Resena;
 import com.example.cinedex.R;
 
 import java.text.SimpleDateFormat;
@@ -19,9 +19,9 @@ import java.util.Locale;
 
 public class ResenaAdapter extends RecyclerView.Adapter<ResenaAdapter.ViewHolder> {
 
-    private List<Reseña> lista;
+    private List<Resena> lista;
 
-    public ResenaAdapter(List<Reseña> lista) {
+    public ResenaAdapter(List<Resena> lista) {
         this.lista = lista;
     }
 
@@ -35,7 +35,7 @@ public class ResenaAdapter extends RecyclerView.Adapter<ResenaAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ResenaAdapter.ViewHolder holder, int position) {
-        Reseña r = lista.get(position);
+        Resena r = lista.get(position);
 
         // --- CÓDIGO ACTUALIZADO PARA TU XML ---
 
@@ -85,7 +85,7 @@ public class ResenaAdapter extends RecyclerView.Adapter<ResenaAdapter.ViewHolder
     }
 
     // Para actualizar datos desde la Activity (o Fragment)
-    public void updateData(List<Reseña> nuevas) {
+    public void updateData(List<Resena> nuevas) {
         this.lista = nuevas;
         notifyDataSetChanged();
     }

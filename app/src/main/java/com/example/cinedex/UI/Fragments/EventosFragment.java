@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.cinedex.R;
 
-public class SearchFragment extends Fragment {
+public class EventosFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

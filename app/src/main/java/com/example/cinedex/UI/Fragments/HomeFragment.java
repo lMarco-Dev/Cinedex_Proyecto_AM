@@ -79,7 +79,7 @@ public class HomeFragment extends Fragment {
                     sectionTop10 = new SectionTop10(
                             "TOP 10 HOY",
                             "Lo más visto en Perú",
-                            response.body().getMovies().subList(0, 10)
+                            response.body().getResults().subList(0, 10)
                     );
                 }
                 checkIfAllCallsAreDone(); // Llama al contador
@@ -92,7 +92,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    sectionPopulares = new Section("Películas Populares", response.body().getMovies());
+                    sectionPopulares = new Section("Películas Populares", response.body().getResults());
                 }
                 checkIfAllCallsAreDone(); // Llama al contador
             }
@@ -104,7 +104,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    sectionEstrenos = new Section("Próximos Estrenos", response.body().getMovies());
+                    sectionEstrenos = new Section("Próximos Estrenos", response.body().getResults());
                 }
                 checkIfAllCallsAreDone(); // Llama al contador
             }
@@ -116,7 +116,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    sectionCartelera = new Section("En Cartelera", response.body().getMovies());
+                    sectionCartelera = new Section("En Cartelera", response.body().getResults());
                 }
                 checkIfAllCallsAreDone(); // Llama al contador
             }
@@ -128,7 +128,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    sectionTendencias = new Section("Tendencias de la Semana", response.body().getMovies());
+                    sectionTendencias = new Section("Tendencias de la Semana", response.body().getResults());
                 }
                 checkIfAllCallsAreDone(); // Llama al contador
             }

@@ -8,11 +8,11 @@ public class MovieResponse {
     @SerializedName("results") // Usé "results" ya que es el nombre correcto del array en la API de TMDB
     private List<Movie> movies;
 
-    public List<Movie> getMovies() {
+    public List<Movie> getResults() {
         return movies;
     }
 
-    public void setMovies(List<Movie> movies) {
+    public void setResults(List<Movie> movies) {
         this.movies = movies;
     }
 }

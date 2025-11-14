@@ -22,9 +22,10 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
+import com.example.cinedex.Data.Models.DTOs.MensajeRespuestaDto;
 import com.example.cinedex.Data.Models.Movie;
-import com.example.cinedex.Data.Models.Reseña;
-import com.example.cinedex.Data.Models.ReseñaRequest; // ¡Importa la clase actualizada!
+import com.example.cinedex.Data.Models.Resena;
+import com.example.cinedex.Data.Models.DTOs.ResenaRequestDto; // ¡Importa la clase actualizada!
 import com.example.cinedex.Data.Network.CineDexApiClient;
 import com.example.cinedex.Data.Network.CineDexApiService;
 import com.example.cinedex.Data.Network.TmdbClient;
@@ -170,21 +171,21 @@ public class MovieDetailFragment extends Fragment implements ResenaDialogFragmen
     }
 
     // --- ¡¡MÉTODO CORREGIDO!! ---
+    // --- Método corregido ---
     @Override
     public void onResenaGuardada(String comentario, float puntaje) {
         Log.d("[DEBUG_RESEÑA]", "Datos recibidos del diálogo: Comentario=" + comentario + " | Puntaje=" + puntaje);
 
         int idUsuario = getUsuarioIdLogueado();
-        String token = getAuthToken();
 
         // VALIDACIÓN 1: ¿Se cargó la película?
         if (this.peliculaActual == null) {
-            Toast.makeText(getContext(), "Error: Datos de la película no cargados. Intenta de nuevo.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Error: Datos de la película no cargados.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         // VALIDACIÓN 2: ¿Está el usuario logueado?
-        if(idUsuario == -1) {
+        if (idUsuario == -1) {
             Toast.makeText(getContext(), "Error: No se encontró sesión de usuario.", Toast.LENGTH_LONG).show();
             return;
         }
@@ -195,63 +196,57 @@ public class MovieDetailFragment extends Fragment implements ResenaDialogFragmen
             return;
         }
 
-        // --- ¡¡AQUÍ ESTÁ LA LÍNEA CORREGIDA!! ---
-        // Ahora le pasamos los 6 argumentos que el constructor espera
-        ReseñaRequest request = new ReseñaRequest(
-                idUsuario,
-                this.peliculaActual.getId(),
-                comentario,
-                puntaje,
-                this.peliculaActual.getTitle(),
-                this.peliculaActual.getPosterPath()
+        // Construimos el DTO para la API
+        ResenaRequestDto request = new ResenaRequestDto(
+                idUsuario,                         // int
+                this.peliculaActual.getId(),       // int
+                this.peliculaActual.getTitle(),    // String: tituloPelicula
+                this.peliculaActual.getPosterPath(), // String: posterUrl
+                comentario,                        // String: texto
+                puntaje                             // double: puntaje
         );
 
-        // 3. Enviar la reseña a tu API de CineDex
-        enviarResena(token, request);
+        // Enviar la reseña SIN TOKEN
+        enviarResena(request);
     }
 
-
-    // Método que llama a Retrofit (con el Logcat de depuración)
-    private void enviarResena(String token, ReseñaRequest request) {
+    // --- Método de envío de la reseña ---
+    private void enviarResena(ResenaRequestDto request) {
         Toast.makeText(getContext(), "Guardando reseña...", Toast.LENGTH_SHORT).show();
-        String authToken = "Bearer " + token;
 
-        Call<Reseña> call = cineDexApiService.postResena(authToken, request);
+        // Llamada Retrofit usando el tipo correcto: MensajeRespuestaDto
+        Call<MensajeRespuestaDto> call = cineDexApiService.postResena(request);
 
-        call.enqueue(new Callback<Reseña>() {
+        call.enqueue(new Callback<MensajeRespuestaDto>() {
             @Override
-            public void onResponse(Call<Reseña> call, Response<Reseña> response) {
+            public void onResponse(Call<MensajeRespuestaDto> call, Response<MensajeRespuestaDto> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.d("API_POST_RESEÑA", "¡Éxito! El body no es nulo. ID Creado: " + response.body().getIdReseña());
-                    Toast.makeText(getContext(), "¡Reseña guardada con éxito!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), response.body().getMensaje(), Toast.LENGTH_LONG).show();
+
+                    // Limpiar campos
+                    // (Si estás en fragment con un diálogo, podrías cerrar diálogo aquí)
                 } else {
                     String errorBody = "N/A";
                     try {
-                        if (response.errorBody() != null) {
-                            errorBody = response.errorBody().string();
-                        }
+                        if (response.errorBody() != null) errorBody = response.errorBody().string();
                     } catch (Exception e) {}
-
-                    Log.e("API_POST_RESEÑA", "Error de API: " + response.code() + " - " + response.message() + " - " + errorBody);
-                    Toast.makeText(getContext(), "Error de API: " + response.code() + " - " + errorBody, Toast.LENGTH_LONG).show();
+                    Log.e("API_POST_RESEÑA", "Error API: " + response.code() + " - " + errorBody);
+                    Toast.makeText(getContext(), "Error API: " + response.code(), Toast.LENGTH_LONG).show();
                 }
             }
+
             @Override
-            public void onFailure(Call<Reseña> call, Throwable t) {
+            public void onFailure(Call<MensajeRespuestaDto> call, Throwable t) {
                 Log.e("API_POST_RESEÑA", "Fallo de conexión: " + t.getMessage());
-                Toast.makeText(getContext(), "Error de CONEXIÓN", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Error de conexión", Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    // Métodos de SharedPreferences (Corregidos para usar "sesion_usuario")
+    // --- Método para obtener el usuario logueado ---
     private int getUsuarioIdLogueado() {
         SharedPreferences prefs = getActivity().getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE);
-        return  prefs.getInt("ID_USUARIO", -1);
+        return prefs.getInt("ID_USUARIO", -1);
     }
 
-    private String getAuthToken() {
-        SharedPreferences prefs = getActivity().getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE);
-        return prefs.getString("AUTH_TOKEN", "");
-    }
 }

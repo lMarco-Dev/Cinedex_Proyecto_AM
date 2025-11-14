@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.cinedex.Data.Models.Reseña;
+import com.example.cinedex.Data.Models.Resena;
 import com.example.cinedex.Data.Network.CineDexApiClient;
 import com.example.cinedex.Data.Network.CineDexApiService;
 import com.example.cinedex.R;
@@ -34,7 +34,7 @@ public class ResenaFragment extends Fragment {
 
     private RecyclerView rvResenas;
     private ResenaAdapter adapter;
-    private List<Reseña> listaDeResenas;
+    private List<Resena> listaDeResenas;
     private CineDexApiService apiService;
 
     public ResenaFragment() {
@@ -72,9 +72,9 @@ public class ResenaFragment extends Fragment {
     }
 
     private void cargarResenasDesdeApi(){
-        apiService.getResenas().enqueue(new Callback<List<Reseña>>() {
+        apiService.getResenas().enqueue(new Callback<List<Resena>>() {
             @Override
-            public void onResponse(Call<List<Reseña>> call, Response<List<Reseña>> response) {
+            public void onResponse(Call<List<Resena>> call, Response<List<Resena>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     // Actualizar la lista en el adaptador
                     listaDeResenas.clear();
@@ -87,7 +87,7 @@ public class ResenaFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<Reseña>> call, Throwable t) {
+            public void onFailure(Call<List<Resena>> call, Throwable t) {
                 Toast.makeText(getContext(), "Fallo de conexión", Toast.LENGTH_SHORT).show();
                 Log.e("ResenaFragment", "Fallo de red: " + t.getMessage());
             }
