@@ -35,7 +35,7 @@ public class Actividad_Principal extends AppCompatActivity {
             int id = destination.getId();
 
             //Comparamos el ID
-            if(id == R.id.homeFragment || id == R.id.searchFragment || id == R.id.profileFragment) {
+            if(id == R.id.homeFragment || id == R.id.eventosFragment || id == R.id.profileFragment) {
                 bottomNavigationView.setVisibility(View.VISIBLE);
             } else {
                 bottomNavigationView.setVisibility(View.GONE);

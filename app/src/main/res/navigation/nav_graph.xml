@@ -30,9 +30,9 @@
     </fragment>
 
     <fragment
-        android:id="@+id/searchFragment"
+        android:id="@+id/eventosFragment"
         android:name="com.example.cinedex.UI.Fragments.EventosFragment"
-        android:label="Buscar"
+        android:label="Eventos"
         tools:layout="@layout/ly_anuncios" />
     <fragment
         android:id="@+id/profileFragment"

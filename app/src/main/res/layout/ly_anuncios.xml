@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- HEADER -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,7 +52,6 @@
                 android:textSize="13sp" />
         </LinearLayout>
 
-        <!-- CAROUSEL HORIZONTAL: ANUNCIOS / BANNER (GRANDE, CON OVERLAY) -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_anuncios"
             android:layout_width="match_parent"
@@ -64,7 +62,6 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_anuncio_enhanced" />
 
-        <!-- ROW: Quick Filters (Eventos / Promos / Estrenos) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -79,8 +76,7 @@
                 android:layout_height="wrap_content"
                 android:text="Eventos"
                 android:textColor="@color/white"
-                android:chipBackgroundColor="@color/emerald_green"
-                android:checked="false"
+                app:chipBackgroundColor="@color/emerald_green" android:checked="false"
                 android:layout_marginEnd="8dp"/>
 
             <com.google.android.material.chip.Chip
@@ -90,8 +86,7 @@
                 android:layout_height="wrap_content"
                 android:text="Ofertas"
                 android:textColor="@color/white"
-                android:chipBackgroundColor="@color/gradient_green_start"
-                android:checked="false"
+                app:chipBackgroundColor="@color/gradient_green_start" android:checked="false"
                 android:layout_marginEnd="8dp"/>
 
             <com.google.android.material.chip.Chip
@@ -101,11 +96,9 @@
                 android:layout_height="wrap_content"
                 android:text="Estrenos"
                 android:textColor="@color/white"
-                android:chipBackgroundColor="@color/kick_green"
-                android:checked="false"/>
+                app:chipBackgroundColor="@color/kick_green" android:checked="false"/>
         </LinearLayout>
 
-        <!-- SECCIÓN: DESCUENTOS (TARJETAS HORIZONTALES) -->
         <TextView
             android:id="@+id/tv_title_descuentos"
             android:layout_width="match_parent"
@@ -126,14 +119,12 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_descuento_enhanced" />
 
-        <!-- SEPARADOR SUTIL -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
             android:background="#222222"/>
 
-        <!-- SECCIÓN DESTACADO: PELÍCULA MÁS VOTADA (5★) - (NO CAMBIAR) -->
         <TextView
             android:id="@+id/tv_title_top"
             android:layout_width="match_parent"
@@ -153,8 +144,6 @@
             android:layout_marginTop="8dp"
             android:background="@color/gray_medium">
 
-            <!-- (el contenido de card_top_movie se mantiene idéntico al diseño anterior,
-                 así lo dejo para tu adaptador y lógica actual) -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -223,14 +212,12 @@
                             android:layout_marginStart="8dp" />
                     </LinearLayout>
 
-                    <!-- Estadísticas (igual que antes) -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:layout_marginTop="10dp">
 
-                        <!-- filas 5★ - 1★ (idénticas a las previas) -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -260,13 +247,11 @@
                                 android:layout_marginStart="8dp" />
                         </LinearLayout>
 
-                        <!-- (4★..1★) repetir como en diseño anterior -->
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- SECCIÓN: NOTICIAS / ARTÍCULOS (LISTADO VERTICAL CON TARJETAS) -->
         <TextView
             android:id="@+id/tv_title_news"
             android:layout_width="match_parent"
@@ -283,7 +268,6 @@
             android:orientation="vertical"
             android:layout_marginTop="8dp">
 
-            <!-- ejemplo de una tarjeta de noticia (si usas RecyclerView, este layout sirve como item) -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -346,7 +330,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- RecyclerView para noticias reales (usa esto en vez de tarjetas estáticas) -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_noticias"
                 android:layout_width="match_parent"
@@ -355,7 +338,6 @@
                 tools:listitem="@layout/item_noticia_enhanced" />
         </LinearLayout>
 
-        <!-- ESPACIO FINAL -->
         <View
             android:layout_width="match_parent"
             android:layout_height="16dp"/>
