@@ -1,28 +1,30 @@
+// Archivo: Data/Models/DTOs/UsuarioPublicoDto.java
 package com.example.cinedex.Data.Models.DTOs;
 
 import com.google.gson.annotations.SerializedName;
 
 public class UsuarioPublicoDto {
 
-    @SerializedName("IdUsuario")
+    // --- CORREGIDO: De PascalCase a camelCase ---
+    @SerializedName("idUsuario")
     private int idUsuario;
 
-    @SerializedName("NombreUsuario")
+    @SerializedName("nombreUsuario")
     private String nombreUsuario;
 
-    @SerializedName("Nombres")
+    @SerializedName("nombres")
     private String nombres;
 
-    @SerializedName("Apellidos")
+    @SerializedName("apellidos")
     private String apellidos;
 
-    @SerializedName("NombreRango")
+    @SerializedName("nombreRango")
     private String nombreRango;
 
     // Constructor vacío (necesario para Gson)
     public UsuarioPublicoDto() { }
 
-    // --- Getters ---
+    // --- Getters (Estos no cambian) ---
     public int getIdUsuario() { return idUsuario; }
     public String getNombreUsuario() { return nombreUsuario; }
     public String getNombres() { return nombres; }

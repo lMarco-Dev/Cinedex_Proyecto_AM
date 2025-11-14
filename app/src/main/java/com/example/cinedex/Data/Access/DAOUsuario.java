@@ -1,3 +1,4 @@
+// Archivo: Data/Access/DAOUsuario.java
 package com.example.cinedex.Data.Access;
 
 import android.content.ContentValues;
@@ -6,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.example.cinedex.Data.Models.DTOs.UsuarioPublicoDto;
 import com.example.cinedex.Data.Models.Usuario;
 
 import java.util.ArrayList;
@@ -20,22 +22,29 @@ public class DAOUsuario {
         Log.d("Estado","[BDHelper]: Inicializado Correctamente");
     }
 
-    // ✅ INSERTAR USUARIO LOCAL (solo después de confirmar con API)
-    public boolean Insertar(Usuario _usuario) {
+    // --- ¡¡MÉTODO INSERTAR CORREGIDO!! ---
+    public long Insertar(UsuarioPublicoDto usuarioDto, String contrasenaPlana) {
         SQLiteDatabase db = helper.getWritableDatabase();
-        ContentValues valores = new ContentValues();
+        ContentValues cv = new ContentValues();
 
-        valores.put(BDHelper.COL_NOMBRE_USUARIO, _usuario.getNombreUsuario());
-        valores.put(BDHelper.COL_EMAIL, _usuario.getEmail());
-        valores.put(BDHelper.COL_CONTRASENA, _usuario.getContraseña());
-        valores.put(BDHelper.COL_NOMBRES, _usuario.getNombres());
-        valores.put(BDHelper.COL_APELLIDOS, _usuario.getApellidos());
-        valores.put(BDHelper.COL_RANGO_ACTUAL, _usuario.getIdRangoActual());
+        // Ponemos TODOS los datos del DTO
+        cv.put(BDHelper.ID_USUARIO, usuarioDto.getIdUsuario());
+        cv.put(BDHelper.COL_NOMBRE_USUARIO, usuarioDto.getNombreUsuario());
+        cv.put(BDHelper.COL_NOMBRES, usuarioDto.getNombres());
+        cv.put(BDHelper.COL_APELLIDOS, usuarioDto.getApellidos());
+        cv.put(BDHelper.COL_CONTRASENA, contrasenaPlana);
 
-        long fila = db.insert(BDHelper.TABLA_USUARIO, null, valores);
+        // --- ¡¡AQUÍ ESTÁ LA CORRECCIÓN!! ---
+        // Como el DTO no trae email, pero la BD local lo exige (NOT NULL),
+        // guardamos el nombreUsuario en la columna email.
+        cv.put(BDHelper.COL_EMAIL, usuarioDto.getNombreUsuario());
+
+        // Asignamos un rango por defecto
+        cv.put(BDHelper.COL_RANGO_ACTUAL, 1); // Valor por defecto '1'
+
+        long id = db.insert(BDHelper.TABLA_USUARIO, null, cv);
         db.close();
-
-        return fila > 0;
+        return id;
     }
 
     // ✅ LISTAR TODOS
@@ -103,7 +112,7 @@ public class DAOUsuario {
         return filas > 0;
     }
 
-    // ✅ Verificar si existe usuario (para evitar duplicar sesión local)
+    // ✅ Verificar si existe usuario
     public boolean ExisteUsuario(String nombreUsuario){
         SQLiteDatabase db = helper.getReadableDatabase();
         Cursor cursor = db.rawQuery(
