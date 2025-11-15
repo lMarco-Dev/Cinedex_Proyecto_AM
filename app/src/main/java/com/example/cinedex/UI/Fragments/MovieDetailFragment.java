@@ -58,6 +58,10 @@ public class MovieDetailFragment extends Fragment implements ResenaDialogFragmen
     // Variable para guardar la película actual
     private Movie peliculaActual;
 
+    /* ==================================================================================
+                                RECIBIDIMOS EL PAQUETE
+       ================================================================================== */
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +72,9 @@ public class MovieDetailFragment extends Fragment implements ResenaDialogFragmen
         cineDexApiService = CineDexApiClient.getApiService();
     }
 
+    /* ==================================================================================
+                                CREAMOS LA CARA
+       ================================================================================== */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              Bundle savedInstanceState) {
@@ -112,6 +119,10 @@ public class MovieDetailFragment extends Fragment implements ResenaDialogFragmen
         });
     }
 
+
+    /* ==================================================================================
+                             SOLICITAMOS LAS DATOS DE LA PELICULA
+       ================================================================================== */
     private void fetchMovieDetails() {
         Call<Movie> call = apiService.getMovieDetails(movieId, TMDB_API_KEY);
         call.enqueue(new Callback<Movie>() {
@@ -130,6 +141,9 @@ public class MovieDetailFragment extends Fragment implements ResenaDialogFragmen
         });
     }
 
+    /* ==================================================================================
+              CUANDO TERMINAMOS DE RECIBIR LOS DATOS DE LA PELICULA LA "DECORAMOS"
+       ================================================================================== */
     private void updateUI(Movie movie) {
         // Guardamos el objeto película
         this.peliculaActual = movie;
@@ -171,7 +185,6 @@ public class MovieDetailFragment extends Fragment implements ResenaDialogFragmen
     }
 
     // --- ¡¡MÉTODO CORREGIDO!! ---
-    // --- Método corregido ---
     @Override
     public void onResenaGuardada(String comentario, float puntaje) {
         Log.d("[DEBUG_RESEÑA]", "Datos recibidos del diálogo: Comentario=" + comentario + " | Puntaje=" + puntaje);

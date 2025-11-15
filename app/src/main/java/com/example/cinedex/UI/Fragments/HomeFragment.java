@@ -26,14 +26,15 @@ public class HomeFragment extends Fragment {
     private final String TMDB_API_KEY = "f908b6414babca36cf721d90d6b85e1f";
 
     private RecyclerView mainRecyclerView;
-    private MainAdapter mainAdapter;
-    private TmdbApiService apiService;
+    private MainAdapter mainAdapter; // -> Encarga de construir la lista
+    private TmdbApiService apiService; // -> Retrofit para hablar ocn la API
 
-    private int totalCalls = 5;
-    private int callsCompleted = 0;
+    private int totalCalls = 5; // -> Cuantas veces se llama a la API
+    private int callsCompleted = 0; // -> Contardor de llamadas
 
-    // --- CAMBIO: Variables para guardar los resultados ---
-    // Guardaremos cada resultado aquí para controlar el orden
+    /* ================================================================================
+                         CAJAS VACIAS PARA GUARDAR LA LISTA
+     ================================================================================ */
     private Section sectionPopulares = null;
     private Section sectionCartelera = null;
     private SectionTop10 sectionTop10 = null;
@@ -41,16 +42,19 @@ public class HomeFragment extends Fragment {
     private Section sectionTendencias = null;
 
 
+    /* ================================================================================
+                            CONSTRUCTOR DEL FRAGMENT
+     ================================================================================ */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Asumiendo que tu layout se llama 'fragment_home.xml'
+        // Utiliza ly_fragment_home como plantilla para mostrar
         View view = inflater.inflate(R.layout.ly_fragment_home, container, false);
 
-        apiService = TmdbClient.getApiService();
-        mainRecyclerView = view.findViewById(R.id.recycler_popular_movies);
-        mainRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        apiService = TmdbClient.getApiService(); // -> Prepara el mensajero
+        mainRecyclerView = view.findViewById(R.id.recycler_popular_movies); // -> Encuentra la lista de peliculas vertical
+        mainRecyclerView.setLayoutManager(new LinearLayoutManager(getContext())); // -> Las organice
 
         // Inicializa el MainAdapter con una lista vacía de tipo 'Object'
         mainAdapter = new MainAdapter(new ArrayList<>(), getContext());
@@ -61,8 +65,13 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
+
+    /* ================================================================================
+                             CARGAR TODO EL CONTENIDO DE LA API
+     ================================================================================ */
     private void fetchAllSections() {
-        // Limpiamos todo para una nueva carga
+
+        // Reseteamos y indicamos donde guardaremos las cajas
         callsCompleted = 0;
         totalCalls = 5;
         sectionPopulares = null;
@@ -71,15 +80,16 @@ public class HomeFragment extends Fragment {
         sectionEstrenos = null;
         sectionTendencias = null;
 
-        // 1. Cargar "Top 10"
+        // 1. Cargar "Top 10" -> Indicamos que acceda a la API y busque TopRatedMovies
         apiService.getTopRatedMovies(TMDB_API_KEY).enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    // Si encontro los datos -> crea la sección TOP 10 HOY
                     sectionTop10 = new SectionTop10(
                             "TOP 10 HOY",
                             "Lo más visto en Perú",
-                            response.body().getResults().subList(0, 10)
+                            response.body().getResults().subList(0, 10) // -> Toma solo los 10 primeros
                     );
                 }
                 checkIfAllCallsAreDone(); // Llama al contador
@@ -87,11 +97,12 @@ public class HomeFragment extends Fragment {
             @Override public void onFailure(Call<MovieResponse> call, Throwable t) { checkIfAllCallsAreDone(); }
         });
 
-        // 2. Cargar "Populares"
+        // 2. Cargar "Populares" -> Indicamos que acceda a la API y busque PopularMovies
         apiService.getPopularMovies(TMDB_API_KEY).enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    // Si encontro los datos -> crea la sección Peliculas populares
                     sectionPopulares = new Section("Películas Populares", response.body().getResults());
                 }
                 checkIfAllCallsAreDone(); // Llama al contador
@@ -136,9 +147,12 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    // --- CAMBIO: Este método ahora construye la lista al final ---
+    /* ================================================================================
+                             SINCRONIZACIÓN DE LAS CAJAS
+     ================================================================================ */
     private synchronized void checkIfAllCallsAreDone() {
         callsCompleted++;
+
         // Solo continuar si TODAS las llamadas (5) han terminado
         if (callsCompleted == totalCalls) {
 
@@ -154,7 +168,6 @@ public class HomeFragment extends Fragment {
                 finalList.add(sectionCartelera);
             }
 
-            // 2. AÑADIR EL TOP 10 EN EL MEDIO
             if (sectionTop10 != null) {
                 finalList.add(sectionTop10);
             }
@@ -166,9 +179,7 @@ public class HomeFragment extends Fragment {
                 finalList.add(sectionTendencias);
             }
 
-            // 3. Actualizar el adaptador UNA SOLA VEZ
-            // Esto elimina el "salto" del scroll
-            mainAdapter.setSections(finalList);
+            mainAdapter.setSections(finalList); // -> Llama al MainAdapter para que se encargue de dibujarlas
         }
     }
 }

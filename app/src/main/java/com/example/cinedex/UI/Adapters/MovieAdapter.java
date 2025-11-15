@@ -26,7 +26,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
 
-    //Crear las filas de las peliculas
+    /* ===========================================================================
+                                FABRICA LA TARJETA
+       =========================================================================== */
     @NonNull
     @Override
     public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -34,7 +36,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         return new MovieViewHolder(view);
     }
 
-    //Rellenar
+    /* ===========================================================================
+                                DECORADOR DE LA TARJETA
+       =========================================================================== */
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
 

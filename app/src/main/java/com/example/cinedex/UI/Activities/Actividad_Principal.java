@@ -18,23 +18,26 @@ public class Actividad_Principal extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ly_actividad_principal);
 
-        // --- Tu código original ---
+        /* ===================================================================
+                                CONEXIÓN PRINCIPAL
+          =================================================================== */
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.nav_host_fragment);
-        NavController navController = navHostFragment.getNavController();
+                .findFragmentById(R.id.nav_host_fragment); // -> Es la ventana
+        NavController navController = navHostFragment.getNavController(); // -> Es lo que decide que se muestra en la ventana
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        NavigationUI.setupWithNavController(bottomNavigationView, navController);
+        NavigationUI.setupWithNavController(bottomNavigationView, navController); // -> Conecta la barra de navegación con el controlador
 
 
-        // --- LA SOLUCIÓN (con tus IDs correctos) ---
-
+        /* ===================================================================
+                                BARRA DE NAVEGACIÓN
+          =================================================================== */
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
 
             //Obtenemos el ID
             int id = destination.getId();
 
-            //Comparamos el ID
+            //Decidimos a que vistas la barra de navegación sera visible o no visible
             if(id == R.id.homeFragment || id == R.id.eventosFragment || id == R.id.profileFragment) {
                 bottomNavigationView.setVisibility(View.VISIBLE);
             } else {

@@ -33,6 +33,7 @@ public class Actividad_Login extends AppCompatActivity {
     TextView txtIrARegistro;
     ImageView fondoLogin;
 
+    // -------------- Conectamos los botones y la cara ----------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,21 +55,24 @@ public class Actividad_Login extends AppCompatActivity {
 
         // -- Login --
         btnIniciarSesion.setOnClickListener(v-> {
+
             String username = etUsuario.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
 
+            // -- Si cualquier campo esta vacio
             if(username.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Llene todos los campos", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            //Hacemos la petición
+            //Llamamos al metodo
             intentarLogin(username, password);
         });
     }
 
     //-- Metodo para comprar con el API REST ---
     private void intentarLogin(String username, String password) {
+
         //Creamos el DTO de Login
         UsuarioLoginDto loginDto = new UsuarioLoginDto(username, password);
 
@@ -80,12 +84,15 @@ public class Actividad_Login extends AppCompatActivity {
             @Override
             public void onResponse(Call<UsuarioPublicoDto> call, Response<UsuarioPublicoDto> response) {
 
+                /*-----------------------------------------------------------------
+                                            LOGIN EXITOSO
+                -------------------------------------------------------------------*/
                 if(response.isSuccessful() && response.body() != null) {
+
                     //Si el login es exitoso
                     UsuarioPublicoDto usuarioLogueado = response.body();
 
-                    // --- CORRECCIÓN 1: Renombrar la variable ---
-                    //Guardar la sesión del usuario
+                    //Abre la mini memoria del telefono
                     SharedPreferences prefsSesion = getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = prefsSesion.edit();
 
@@ -101,13 +108,12 @@ public class Actividad_Login extends AppCompatActivity {
                     //Enviamos al usuario a la actividad principal
                     Toast.makeText(Actividad_Login.this, "Bienvenido, " + usuarioLogueado.getNombres() + "!", Toast.LENGTH_SHORT).show();
 
-                    // --- CORRECCIÓN 1 (Continuación): Usar un nombre diferente ---
+                    // Verifica la memoria para saber si acepto los terminos y condiciones
                     SharedPreferences prefsTerminos = getSharedPreferences("CineDexPrefs", MODE_PRIVATE);
                     boolean acepto = prefsTerminos.getBoolean("TERMINOS_ACEPTADOS", false);
 
-                    // --- CORRECCIÓN 2: Lógica de redirección arreglada ---
-                    Intent intent;
 
+                    Intent intent;
                     if (!acepto) {
                         // Si no ha aceptado, lo mandamos a Términos
                         intent = new Intent(Actividad_Login.this, Actividad_Terminos.class);
@@ -117,20 +123,26 @@ public class Actividad_Login extends AppCompatActivity {
                         // Si ya aceptó, lo mandamos a la Principal
                         intent = new Intent(Actividad_Login.this, Actividad_Principal.class);
 
-                        // (Buena Práctica): Limpiamos la pila de actividades
                         // para que no pueda presionar "Atrás" y volver al Login
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
                         startActivity(intent);
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                        finish(); // Cerramos el Login
+                        finish();
                     }
+
+                    /*-----------------------------------------------------------------
+                                            LOGIN FALLIDO
+                    -------------------------------------------------------------------*/
                 } else {
                     Log.e("[FALLO LOGIN]", "Código: " + response.code());
                     Toast.makeText(Actividad_Login.this, "Usuario o contraseña incorrecta", Toast.LENGTH_SHORT).show();
                 }
             }
 
+            /*-----------------------------------------------------------------
+                                        FALLO DE CONEXIÓN
+                -------------------------------------------------------------------*/
             @Override
             public void onFailure(Call<UsuarioPublicoDto> call, Throwable t) {
                 //Error de red

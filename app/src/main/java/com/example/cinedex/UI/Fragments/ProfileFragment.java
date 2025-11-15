@@ -55,7 +55,6 @@ public class ProfileFragment extends Fragment {
         MaterialButton btnCerrarSesion = view.findViewById(R.id.btnCerrarSesion);
 
         // --- 3. Cargar los datos (CÓDIGO REAL) ---
-        // ✅ Cargar la info real desde SharedPreferences
         cargarDatosUsuario();
 
         // --- 4. Asignar los nuevos listeners ---
@@ -91,7 +90,7 @@ public class ProfileFragment extends Fragment {
 
     // ✅ NUEVO: Método para cargar los datos del usuario
     private void cargarDatosUsuario() {
-        // 1. Obtener SharedPreferences (Necesitamos 'getActivity()' para el contexto)
+        // 1. Obtener SharedPreferences
         SharedPreferences prefs = getActivity().getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE);
 
         // 2. Extraer los datos
@@ -123,9 +122,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // Recargar los datos cada vez que el fragmento se vuelve visible
-        // Esto es CLAVE para que si el usuario edita su perfil en 'Actividad_Usuario'
-        // y regresa, los datos se actualicen aquí automáticamente.
         cargarDatosUsuario();
     }
 }

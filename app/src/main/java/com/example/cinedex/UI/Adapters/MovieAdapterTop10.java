@@ -23,16 +23,23 @@ public class MovieAdapterTop10 extends RecyclerView.Adapter<MovieAdapterTop10.Mo
         this.context = context;
     }
 
+    /* ===========================================================================
+                                FABRICA LA TARJETA
+       =========================================================================== */
     @NonNull
     @Override
     public MovieTop10ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //Convierte el molde en una tarjeta vacia para que onBindViewHolder lo utilice
         View view = LayoutInflater.from(context).inflate(R.layout.item_movie_top10, parent, false);
         return new MovieTop10ViewHolder(view);
     }
 
+    /* ===========================================================================
+                                DECORADOR DE LA TARJETA
+       =========================================================================== */
     @Override
     public void onBindViewHolder(@NonNull MovieTop10ViewHolder holder, int position) {
-        Movie movie = movies.get(position);
+        Movie movie = movies.get(position); // -> Obtiene la pelicula en su posición
 
         // Poner el número (posición + 1)
         holder.rankNumber.setText(String.valueOf(position + 1));

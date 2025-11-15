@@ -19,17 +19,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // ---------------------------- Jalamos la ids de nuestro xml ------------------------------
         ImageView logo = findViewById(R.id.logoSplash);
         TextView titulo = findViewById(R.id.tvAppName);
 
-        // Cargar animaciones
+        // ---------------------------- Cargamos la animaciones ------------------------------
         Animation fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
 
-        // Mostrar el logo y texto con fade-in
+        // ---------------------------- Mostrar el logo y texto ------------------------------
         logo.startAnimation(fadeIn);
         titulo.startAnimation(fadeIn);
 
+        // ------------ Secuencia temporizada para la bienvenida --------------------
         // Esperar 3 segundos antes de pasar al login con transición elegante
         new Handler().postDelayed(() -> {
             logo.startAnimation(fadeOut);
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 finish();
-            }, 800); // espera que termine el fadeOut
+            }, 800); // Duración para la transición
         }, 2500); // duración total del splash antes del fade out
     }
 }
